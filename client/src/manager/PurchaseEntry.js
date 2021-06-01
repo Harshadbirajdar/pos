@@ -124,6 +124,23 @@ const PurchaseEntry = () => {
     });
     return encodeNumber;
   };
+  const round = (numbe) => {
+    let number = Math.ceil(numbe);
+    let a = (number / 10).toString().split(".");
+    if (number % 100 === 0) {
+      return number - 1;
+    }
+
+    if (number.legnth == 1) {
+      return number;
+    }
+
+    if (a[1] > 5) {
+      return a[0] * 10 + 10;
+    } else {
+      return a[0] * 10;
+    }
+  };
   const Tables = () => {
     return (
       <TableContainer component={Paper}>
@@ -514,7 +531,7 @@ const PurchaseEntry = () => {
                 setProducts({
                   ...products,
                   purchase: e.target.value,
-                  price: parseInt(pc) + parseInt(e.target.value),
+                  price: round(parseInt(pc) + parseInt(e.target.value)),
                   secondLine: convertCode(e.target.value),
                 });
               }}
@@ -535,7 +552,7 @@ const PurchaseEntry = () => {
                 setProducts({
                   ...products,
                   percentage: e.target.value,
-                  price: parseFloat(pc) + parseFloat(products.purchase),
+                  price: round(parseFloat(pc) + parseFloat(products.purchase)),
                 });
               }}
             />
