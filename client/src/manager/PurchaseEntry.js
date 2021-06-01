@@ -115,6 +115,15 @@ const PurchaseEntry = () => {
   const onhandleProductChange = (name) => (e) => {
     setProducts({ ...products, [name]: e.target.value });
   };
+  const convertCode = (number) => {
+    const code = ["L", "B", "H", "A", "N", "D", "R", "I", "M", "O"];
+    let numberArray = [...number.toString()];
+    let encodeNumber = "";
+    numberArray.map((v, index) => {
+      encodeNumber += code[v];
+    });
+    return encodeNumber;
+  };
   const Tables = () => {
     return (
       <TableContainer component={Paper}>
@@ -506,6 +515,7 @@ const PurchaseEntry = () => {
                   ...products,
                   purchase: e.target.value,
                   price: parseInt(pc) + parseInt(e.target.value),
+                  secondLine: convertCode(e.target.value),
                 });
               }}
             />
