@@ -7,13 +7,19 @@ const productSchema = new mongoose.Schema({
     type: ObjectId,
     ref: "Category",
   },
+  firstLine: {
+    type: String,
+  },
   barcode: {
     type: String,
     required: true,
   },
   hsn: {
     type: String,
-    required: true,
+    // required: true,
+  },
+  qty: {
+    type: Number,
   },
   price: {
     type: Number,
@@ -32,6 +38,16 @@ const productSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
+  },
+  secondLine: {
+    type: String,
+  },
+  thirdLine: {
+    type: String,
+  },
+  createAt: {
+    type: Date,
+    default: new Date().toISOString(),
   },
 });
 

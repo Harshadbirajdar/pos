@@ -10,6 +10,10 @@ const categorySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  hsn: {
+    type: Number,
+    required: true,
+  },
   commisionBase: {
     type: Number,
     default: 0,

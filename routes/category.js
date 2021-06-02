@@ -18,7 +18,10 @@ router.param("userId", getUserById);
 
 router.post(
   "/:userId/category",
-  [check("name").isLength({ min: 2 }).withMessage("Please enter the name")],
+  [
+    check("name").isLength({ min: 2 }).withMessage("Please enter the name"),
+    check("hsn").isLength({ min: 2 }).withMessage("Please enter the HSN Code"),
+  ],
   isSignIn,
   checkToken,
   isAuthinticated,

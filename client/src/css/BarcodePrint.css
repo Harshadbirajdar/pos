@@ -1,0 +1,9 @@
+@media print {
+  .print {
+    page-break-after: always;
+  }
+}
+.test {
+  margin: 0;
+  text-align: center;
+}

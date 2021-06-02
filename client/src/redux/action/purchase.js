@@ -33,9 +33,26 @@ export const purchaseEntry = (values, setValues) => {
       })
       .then((response) => {
         dispatch(purchaseEntrySuccess(response.data));
+        setValues({
+          supplier: "",
+          billNo: "",
+          billDate: "",
+          billAmount: "",
+          sgst: "",
+          cgst: "",
+          igst: "",
+          transportName: "",
+          transportPrice: "",
+          lrNo: "",
+          transportDate: "",
+          totalQty: "",
+          withoutGst: "",
+          product: [],
+        });
       })
       .catch((err) => {
-        dispatch(purchaseEntryFailed(err.response.data.error));
+        console.log(err);
+        // dispatch(purchaseEntryFailed(err.response.data.error));
       });
   };
 };

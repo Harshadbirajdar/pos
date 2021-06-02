@@ -32,6 +32,7 @@ const AddCategory = ({ category, addCategory }) => {
     name: "",
     commision: "",
     commisionBase: 0,
+    hsn: "",
   });
   const [open, setOpen] = useState(false);
   const onhandleChange = (name) => (event) => {
@@ -87,6 +88,17 @@ const AddCategory = ({ category, addCategory }) => {
               label="Category Name"
               value={values.name}
               onChange={onhandleChange("name")}
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              type="Number"
+              label="HSN Code"
+              value={values.hsn}
+              onChange={onhandleChange("hsn")}
               autoFocus
             />
             <Grid container spacing={2}>

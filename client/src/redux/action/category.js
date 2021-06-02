@@ -38,7 +38,7 @@ export const addCategory = (values, setValues, setOpen) => {
       .then((response) => {
         dispatch(addNewCategorySuccess(response.data));
         setOpen(true);
-        setValues({ name: "", commision: "", commisionBase: 0 });
+        setValues({ name: "", commision: "", commisionBase: 0, hsn: "" });
       })
       .catch((err) => {
         setOpen(true);

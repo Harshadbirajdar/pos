@@ -18,14 +18,20 @@ import {
   CircularProgress,
   Snackbar,
 } from "@material-ui/core";
+import ReactToPrint from "react-to-print";
+
 import { Alert, Autocomplete } from "@material-ui/lab";
 import SaveIcon from "@material-ui/icons/Save";
+import { useReactToPrint } from "react-to-print";
 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { isAuthenticated } from "../apicall";
 import { API } from "../backend";
 import Base from "../core/Base";
+import { purchaseEntry } from "../redux/action/purchase";
+import { connect } from "react-redux";
+import BarcodePrint from "../components/BarcodePrint";
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
@@ -37,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "10px",
   },
 }));
-const PurchaseEntry = () => {
+const PurchaseEntry = ({ purchaseEntry, product }) => {
   const { user, token } = isAuthenticated();
 
   const classes = useStyles();
@@ -54,7 +60,7 @@ const PurchaseEntry = () => {
   const [values, setValues] = useState({
     supplier: "",
     billNo: "",
-    mrp: "",
+
     billDate: "",
     billAmount: "",
     sgst: "",
@@ -80,6 +86,8 @@ const PurchaseEntry = () => {
     secondLine: "",
     percentage: "",
     purchase: "",
+    size: "",
+    thirdLine: "",
   });
   const getAllSupplier = (name = "") => {
     axios
@@ -136,9 +144,9 @@ const PurchaseEntry = () => {
     }
 
     if (a[1] > 5) {
-      return a[0] * 10 + 10;
+      return (a[0] * 10 + 10) % 100 == 0 ? a[0] * 10 + 9 : a[0] * 10 + 10;
     } else {
-      return a[0] * 10;
+      return (a[0] * 10) % 100 == 0 ? a[0] * 10 - 1 : a[0] * 10;
     }
   };
   const Tables = () => {
@@ -150,7 +158,9 @@ const PurchaseEntry = () => {
               <TableCell>Category </TableCell>
               <TableCell>First Line</TableCell>
               <TableCell>Second Line</TableCell>
+
               <TableCell>Qty</TableCell>
+              <TableCell>Size</TableCell>
               <TableCell>MRP</TableCell>
               <TableCell>SGST</TableCell>
               <TableCell>CGST</TableCell>
@@ -172,6 +182,8 @@ const PurchaseEntry = () => {
                 <TableCell>{product.firstLine}</TableCell>
                 <TableCell>{product.secondLine}</TableCell>
                 <TableCell>{product.qty}</TableCell>
+                <TableCell>{product.size}</TableCell>
+
                 <TableCell>{product.price}</TableCell>
                 <TableCell>{product.sgst}</TableCell>
                 <TableCell>{product.cgst}</TableCell>
@@ -233,7 +245,9 @@ const PurchaseEntry = () => {
     }
 
     let product = values.product;
+
     product.push(products);
+
     setValues({ ...values, product });
 
     setProducts({
@@ -247,9 +261,23 @@ const PurchaseEntry = () => {
       secondLine: "",
       percentage: "",
       purchase: "",
+      size: "",
     });
   };
 
+  const componentRef = useRef();
+  const pageStyle = "@page { size:83mm 42.2mm;margin:0}";
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    pageStyle: pageStyle,
+    onAfterPrint: () => {
+      // setDialog(false);
+      // clearCustomer();
+    },
+    onBeforeGetContent: (a) => {
+      console.log(a);
+    },
+  });
   return (
     <Base title="Purchase Entry">
       <Container maxWidth="xl">
@@ -259,10 +287,11 @@ const PurchaseEntry = () => {
             <Autocomplete
               id="combo-box-demo"
               options={suppliers}
+              value={values.supplier}
               getOptionLabel={(option) => option.name}
               //   style={{ width: 300 }}
               onChange={(event, newValues) => {
-                setValues({ ...values, supplier: newValues?._id });
+                setValues({ ...values, supplier: newValues });
               }}
               onInputChange={(e, newInput) => {
                 getAllSupplier(newInput);
@@ -456,8 +485,7 @@ const PurchaseEntry = () => {
               fullWidth
               type="number"
               label="Total Qty"
-              value={values.totalQty}
-              onChange={onhandleChange("totalQty")}
+              value={values.product.reduce((a, b) => a + parseInt(b.qty), 0)}
             />
           </Grid>
         </Grid>
@@ -482,7 +510,7 @@ const PurchaseEntry = () => {
               )}
             />
           </Grid>
-          <Grid item md={2}>
+          <Grid item md={1}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -504,6 +532,7 @@ const PurchaseEntry = () => {
               onChange={onhandleProductChange("secondLine")}
             />
           </Grid>
+
           <Grid item md={1}>
             <TextField
               variant="outlined"
@@ -522,17 +551,33 @@ const PurchaseEntry = () => {
               margin="normal"
               required
               fullWidth
+              label="Size"
+              value={products.size}
+              onChange={onhandleProductChange("size")}
+            />
+          </Grid>
+          <Grid item md={1}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
               label="Pur Rate"
               type="Number"
               value={products.purchase}
               onChange={(e) => {
                 let pc = (products.percentage * e.target.value) / 100;
-
+                console.log(values.supplier);
                 setProducts({
                   ...products,
                   purchase: e.target.value,
                   price: round(parseInt(pc) + parseInt(e.target.value)),
-                  secondLine: convertCode(e.target.value),
+                  thirdLine:
+                    values.supplier == "" || values.supplier == undefined
+                      ? convertCode(e.target.value)
+                      : convertCode(e.target.value) +
+                        "-" +
+                        values.supplier?.shortName,
                 });
               }}
             />
@@ -607,12 +652,43 @@ const PurchaseEntry = () => {
           size="large"
           className={classes.button}
           startIcon={<SaveIcon />}
+          onClick={(e) => {
+            e.preventDefault();
+            // handlePrint();
+            purchaseEntry(values, setValues);
+          }}
         >
           Save
         </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          className={classes.button}
+          startIcon={<SaveIcon />}
+          onClick={(e) => {
+            e.preventDefault();
+            handlePrint();
+            // purchaseEntry(values, setValues);
+          }}
+        >
+          Print
+        </Button>
+        <div style={{ display: "none" }}>
+          <BarcodePrint ref={componentRef} product={product.product} />
+        </div>
       </Container>
     </Base>
   );
 };
 
-export default PurchaseEntry;
+const mapStateToProps = (state) => ({
+  product: state.purchase,
+});
+const mapDispatchToProps = (dispatch) => ({
+  purchaseEntry: (values, setValues) => {
+    dispatch(purchaseEntry(values, setValues));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PurchaseEntry);

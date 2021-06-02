@@ -12,19 +12,28 @@ exports.purchaseEntry = (req, res) => {
       error: errors.array()[0].msg,
     });
   }
-  const { billNo, supplier, billAmount, product } = req.body;
+  const {
+    billNo,
+    supplier,
+    billAmount,
+    billDate,
+    product,
+    sgst,
+    cgst,
+    igst,
+    transportName,
+  } = req.body;
 
   Product.insertMany(product, (err, products) => {
     if (err) {
+      console.log(err);
       return res.status(400).json({
         error: "Something went wrong",
       });
     }
 
     let supplierInvoice = new SupplierInvoice({
-      billNo,
-      supplier,
-      billAmount,
+      ...req.body,
       product: products,
     });
     supplierInvoice.save((err, invoice) => {
