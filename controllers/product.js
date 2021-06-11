@@ -64,3 +64,26 @@ exports.getProductByBarcode = (req, res) => {
       return res.json(prodcut);
     });
 };
+
+// get All product with pageination
+
+exports.getAllproduct = async (req, res) => {
+  let limit = parseInt(req.query.rowPerPage) || 10;
+  let page = parseInt(req.query.page) || 0;
+
+  const startIndex = limit * page;
+  const totalCount = await Product.find().countDocuments();
+
+  Product.find()
+    .limit(limit)
+    .populate("category")
+    .skip(startIndex)
+    .exec((err, product) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Something went wrong",
+        });
+      }
+      return res.json({ totalCount, product });
+    });
+};

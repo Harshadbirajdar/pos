@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema({
   barcode: {
     type: String,
     required: true,
+    unique: true,
   },
   hsn: {
     type: String,
@@ -55,14 +56,14 @@ productSchema.pre("insertMany", function (next, docs) {
   Counter.findByIdAndUpdate(
     { _id: "barcode" },
     { $inc: { seq: docs.length } },
-    { upsert: true }
+    { upsert: true, new: true }
   ).exec((err, data) => {
+    let seq = data.seq - docs.length;
     docs.map((doc) => {
-      data.seq = data.seq + 1;
-      doc.barcode = data.seq;
+      seq = seq + 1;
+      doc.barcode = seq;
     });
 
-    console.log(docs);
     next();
   });
 
@@ -71,5 +72,6 @@ productSchema.pre("insertMany", function (next, docs) {
 });
 
 const Product = mongoose.model("Product", productSchema);
+Product.createIndexes();
 
 module.exports = Product;

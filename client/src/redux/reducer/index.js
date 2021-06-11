@@ -6,6 +6,7 @@ import purchase from "./purchase";
 import sale from "./sale";
 import salesman from "./salesman";
 import menu from "./menu";
+import product from "./product";
 export default combineReducers({
   supplier,
   category,
@@ -14,4 +15,5 @@ export default combineReducers({
   sale,
   salesman,
   menu,
+  product,
 });

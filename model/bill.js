@@ -52,7 +52,6 @@ const billSchema = new mongoose.Schema({
 
   createdAt: {
     type: Date,
-    default: new Date().toISOString(),
   },
 });
 billSchema.pre("save", function (next) {
@@ -64,7 +63,7 @@ billSchema.pre("save", function (next) {
     { new: true, upsert: true }
   ).exec((err, data) => {
     doc.billNo = doc.billNo + data.seq;
-    console.log(data);
+    doc.createdAt = new Date();
     doc.populate("customer").execPopulate();
     next();
   });

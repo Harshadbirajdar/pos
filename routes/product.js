@@ -5,11 +5,13 @@ const {
   isAuthinticated,
   isManager,
   isCashier,
+  isSaleSupervisor,
 } = require("../controllers/auth");
 const { getUserById } = require("../controllers/user");
 const {
   purchaseEntry,
   getProductByBarcode,
+  getAllproduct,
 } = require("../controllers/product");
 
 const router = express.Router();
@@ -24,12 +26,20 @@ router.post(
   purchaseEntry
 );
 router.get(
-  "/:userId/product",
+  "/:userId/product/",
   isSignIn,
   checkToken,
   isAuthinticated,
   isCashier,
   getProductByBarcode
+);
+router.get(
+  "/:userId/all/product/",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isSaleSupervisor,
+  getAllproduct
 );
 
 module.exports = router;

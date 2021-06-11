@@ -20,7 +20,6 @@ const ViewSupplier = ({ getAllSupplier, supplier }) => {
   }, []);
   return (
     <Base title="View Supplier">
-      {console.log(isAuthenticated())}
       <TableContainer component={Paper} style={{ maxWidth: "90vw" }}>
         <Table>
           <TableHead stickyHeader>

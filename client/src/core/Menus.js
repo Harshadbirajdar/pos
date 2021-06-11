@@ -20,6 +20,7 @@ import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import ReceiptIcon from "@material-ui/icons/Receipt";
 import AccessibilityIcon from "@material-ui/icons/Accessibility";
 import AddIcon from "@material-ui/icons/Add";
+import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { connect } from "react-redux";
 import {
   categoryState,
@@ -70,6 +71,16 @@ const Menus = ({
               <PersonAddIcon />
             </ListItemIcon>
             <ListItemText primary="Purchase Entry"></ListItemText>
+          </ListItem>
+        </List>
+      </Link>
+      <Link to="/admin/view/product">
+        <List>
+          <ListItem button>
+            <ListItemIcon>
+              <FileCopyIcon />
+            </ListItemIcon>
+            <ListItemText primary="View Product"></ListItemText>
           </ListItem>
         </List>
       </Link>
