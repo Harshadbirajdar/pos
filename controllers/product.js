@@ -41,3 +41,26 @@ exports.purchaseEntry = (req, res) => {
     });
   });
 };
+
+// get product by barcode
+
+exports.getProductByBarcode = (req, res) => {
+  let barcode = req.query.barcode;
+
+  Product.findOne({ barcode })
+    .populate("category")
+    .exec((err, prodcut) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Something went wrong",
+        });
+      }
+      if (!prodcut) {
+        return res.status(403).json({
+          error: "Product Not Found in Database",
+        });
+      }
+
+      return res.json(prodcut);
+    });
+};

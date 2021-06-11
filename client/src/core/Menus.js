@@ -17,7 +17,15 @@ import StarBorder from "@material-ui/icons/StarBorder";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import ControlPointDuplicateIcon from "@material-ui/icons/ControlPointDuplicate";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import ReceiptIcon from "@material-ui/icons/Receipt";
+import AccessibilityIcon from "@material-ui/icons/Accessibility";
+import AddIcon from "@material-ui/icons/Add";
 import { connect } from "react-redux";
+import {
+  categoryState,
+  salesmanState,
+  spplierState,
+} from "../redux/action/menu";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -28,7 +36,14 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(4),
   },
 }));
-const Menus = () => {
+const Menus = ({
+  Supplier,
+  changeSupplier,
+  Category,
+  changeCategory,
+  changeSalesman,
+  Salesman,
+}) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -38,6 +53,16 @@ const Menus = () => {
 
   return (
     <List>
+      <Link to="/admin/sale">
+        <List>
+          <ListItem button>
+            <ListItemIcon>
+              <ReceiptIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Sale Panel"></ListItemText>
+          </ListItem>
+        </List>
+      </Link>
       <Link to="/admin/purchase">
         <List>
           <ListItem button className={classes.nested}>
@@ -48,14 +73,14 @@ const Menus = () => {
           </ListItem>
         </List>
       </Link>
-      <ListItem button onClick={handleClick}>
+      <ListItem button onClick={changeSupplier}>
         <ListItemIcon>
           <SupervisorAccountIcon color="primary" />
         </ListItemIcon>
         <ListItemText primary="Supplier" />
-        {open ? <ExpandLess /> : <ExpandMore />}
+        {Supplier ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={Supplier} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <Link to="/admin/add/supplier">
             <List>
@@ -79,15 +104,46 @@ const Menus = () => {
           </Link>
         </List>
       </Collapse>
+      <ListItem button onClick={changeSalesman}>
+        <ListItemIcon>
+          <AccessibilityIcon color="primary" />
+        </ListItemIcon>
+        <ListItemText primary="Salesman" />
+        {Salesman ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={Salesman} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <Link to="/admin/add/salesman">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText primary="Add Salesman"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+          <Link to="/admin/view/supplier">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <PeopleAltIcon />
+                </ListItemIcon>
+                <ListItemText primary="View suplier"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+        </List>
+      </Collapse>
 
-      <ListItem button onClick={handleClick}>
+      <ListItem button onClick={changeCategory}>
         <ListItemIcon>
           <CategoryIcon color="primary" />
         </ListItemIcon>
         <ListItemText primary="Category" />
-        {open ? <ExpandLess /> : <ExpandMore />}
+        {Category ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={Category} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <Link to="/admin/add/category">
             <List>
@@ -114,5 +170,20 @@ const Menus = () => {
     </List>
   );
 };
-
-export default Menus;
+const mapStateToProps = (state) => ({
+  Supplier: state.menu.supplier,
+  Category: state.menu.category,
+  Salesman: state.menu.salesman,
+});
+const mapDispatchToProps = (dispatch) => ({
+  changeSupplier: () => {
+    dispatch(spplierState());
+  },
+  changeCategory: () => {
+    dispatch(categoryState());
+  },
+  changeSalesman: () => {
+    dispatch(salesmanState());
+  },
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Menus);

@@ -2,10 +2,6 @@ import {
   Container,
   TextField,
   makeStyles,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
   Button,
   TableCell,
@@ -15,11 +11,9 @@ import {
   TableContainer,
   Paper,
   TableBody,
-  CircularProgress,
   Snackbar,
 } from "@material-ui/core";
-import ReactToPrint from "react-to-print";
-
+import PrintIcon from "@material-ui/icons/Print";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import SaveIcon from "@material-ui/icons/Save";
 import { useReactToPrint } from "react-to-print";
@@ -43,18 +37,11 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "10px",
   },
 }));
-const PurchaseEntry = ({ purchaseEntry, product }) => {
+const PurchaseEntry = ({ purchaseEntry, Product }) => {
   const { user, token } = isAuthenticated();
 
   const classes = useStyles();
-  const top100Films = [
-    { title: "The Shawshank Redemption", year: 1994 },
-    { title: "The Godfather", year: 1972 },
-    { title: "The Godfather: Part II", year: 1974 },
-    { title: "The Dark Knight", year: 2008 },
-    { title: "12 Angry Men", year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-  ];
+
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState([]);
   const [values, setValues] = useState({
@@ -139,14 +126,14 @@ const PurchaseEntry = ({ purchaseEntry, product }) => {
       return number - 1;
     }
 
-    if (number.legnth == 1) {
+    if (number.legnth === 1) {
       return number;
     }
 
     if (a[1] > 5) {
-      return (a[0] * 10 + 10) % 100 == 0 ? a[0] * 10 + 9 : a[0] * 10 + 10;
+      return (a[0] * 10 + 10) % 100 === 0 ? a[0] * 10 + 9 : a[0] * 10 + 10;
     } else {
-      return (a[0] * 10) % 100 == 0 ? a[0] * 10 - 1 : a[0] * 10;
+      return (a[0] * 10) % 100 === 0 ? a[0] * 10 - 1 : a[0] * 10;
     }
   };
   const Tables = () => {
@@ -219,27 +206,27 @@ const PurchaseEntry = ({ purchaseEntry, product }) => {
 
   const onAddClick = (e) => {
     e.preventDefault();
-    if (products.category == "") {
+    if (products.category === "") {
       setOpen("Please select the category");
       return true;
     }
-    if (products.firstLine == "") {
+    if (products.firstLine === "") {
       setOpen("Please enter the First Line");
       return true;
     }
-    if (products.qty == "") {
+    if (products.qty === "") {
       setOpen("Please enter the Quantity");
       return true;
     }
-    if (products.price == "") {
+    if (products.price === "") {
       setOpen("Please enter the MRP");
       return true;
     }
-    if (products.sgst == "") {
+    if (products.sgst === "") {
       setOpen("Please enter the SGST");
       return true;
     }
-    if (products.cgst == "") {
+    if (products.cgst === "") {
       setOpen("Please enter the CGST");
       return true;
     }
@@ -573,7 +560,7 @@ const PurchaseEntry = ({ purchaseEntry, product }) => {
                   purchase: e.target.value,
                   price: round(parseInt(pc) + parseInt(e.target.value)),
                   thirdLine:
-                    values.supplier == "" || values.supplier == undefined
+                    values.supplier === "" || values.supplier === undefined
                       ? convertCode(e.target.value)
                       : convertCode(e.target.value) +
                         "-" +
@@ -660,22 +647,25 @@ const PurchaseEntry = ({ purchaseEntry, product }) => {
         >
           Save
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          className={classes.button}
-          startIcon={<SaveIcon />}
-          onClick={(e) => {
-            e.preventDefault();
-            handlePrint();
-            // purchaseEntry(values, setValues);
-          }}
-        >
-          Print
-        </Button>
+        {console.log(Object.keys(Product.product).length)}
+        {Object.keys(Product.product).length !== 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            className={classes.button}
+            startIcon={<PrintIcon />}
+            onClick={(e) => {
+              e.preventDefault();
+              handlePrint();
+              // purchaseEntry(values, setValues);
+            }}
+          >
+            Print
+          </Button>
+        )}
         <div style={{ display: "none" }}>
-          <BarcodePrint ref={componentRef} product={product.product} />
+          <BarcodePrint ref={componentRef} product={Product.product} />
         </div>
       </Container>
     </Base>
@@ -683,7 +673,7 @@ const PurchaseEntry = ({ purchaseEntry, product }) => {
 };
 
 const mapStateToProps = (state) => ({
-  product: state.purchase,
+  Product: state.purchase,
 });
 const mapDispatchToProps = (dispatch) => ({
   purchaseEntry: (values, setValues) => {

@@ -3,7 +3,24 @@
     page-break-after: always;
   }
 }
+
 .test {
   margin: 0;
   text-align: center;
+}
+
+.bill-print {
+  padding: 0;
+}
+.bill-print > thead > th {
+  padding: 0;
+  text-align: center;
+}
+.bill-print > * td {
+  padding: 0;
+  text-align: center;
+}
+
+body {
+  overflow: auto;
 }

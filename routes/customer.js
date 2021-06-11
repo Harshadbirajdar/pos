@@ -3,33 +3,33 @@ const {
   isSignIn,
   checkToken,
   isAuthinticated,
-  isManager,
   isCashier,
 } = require("../controllers/auth");
-const { getUserById } = require("../controllers/user");
 const {
-  purchaseEntry,
-  getProductByBarcode,
-} = require("../controllers/product");
-
+  getCustomerByPhone,
+  createCustomer,
+} = require("../controllers/customer");
+const { getUserById } = require("../controllers/user");
 const router = express.Router();
+
 router.param("userId", getUserById);
 
-router.post(
-  "/:userId/product",
-  isSignIn,
-  checkToken,
-  isAuthinticated,
-  isManager,
-  purchaseEntry
-);
 router.get(
-  "/:userId/product",
+  "/:userId/customer",
   isSignIn,
   checkToken,
   isAuthinticated,
   isCashier,
-  getProductByBarcode
+  getCustomerByPhone
+);
+
+router.post(
+  "/:userId/customer",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isCashier,
+  createCustomer
 );
 
 module.exports = router;

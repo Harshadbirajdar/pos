@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { isAuthenticated } from "../apicall";
+import { isAuthenticated } from "../index";
 
 const SaleSupervisorRoute = ({ component: Component, ...rest }) => {
   return (
