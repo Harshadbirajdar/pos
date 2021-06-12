@@ -6,6 +6,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
 } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
@@ -58,6 +59,19 @@ const ViewProduct = ({ fetchProduct, Product }) => {
               })}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPage={Product.rowPerPage}
+          rowsPerPageOptions={[5, 10, 20]}
+          count={Product.totalCount}
+          page={Product.page}
+          onChangeRowsPerPage={(e, rowPerPage) => {
+            fetchProduct(rowPerPage.props.value, Product.page);
+          }}
+          onChangePage={(event, page) => {
+            fetchProduct(Product.rowPerPage, page);
+          }}
+          component="div"
+        ></TablePagination>
       </TableContainer>
     </Base>
   );
