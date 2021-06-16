@@ -1,5 +1,7 @@
 import {
   CATEGORY_STATE,
+  CUSTOMER_STATE,
+  REPORT_STATE,
   SALESMAN_STATE,
   SUPPLIER_STATE,
 } from "../action/action.type";
@@ -10,6 +12,8 @@ const initalState = {
   salesman: false,
 
   category: false,
+  customer: false,
+  report: false,
 };
 
 const menu = (state = initalState, action) => {
@@ -22,6 +26,11 @@ const menu = (state = initalState, action) => {
 
     case SALESMAN_STATE:
       return { ...state, salesman: !state.salesman };
+    case CUSTOMER_STATE:
+      return { ...state, customer: !state.customer };
+
+    case REPORT_STATE:
+      return { ...state, report: !state.report };
     default:
       return state;
   }

@@ -48,7 +48,7 @@ exports.getAllSupplier = async (req, res) => {
   Supplier.find()
     .limit(limit)
     .skip(startIndex)
-    .select("name contactNumber shortName")
+
     .exec((err, supplier) => {
       if (err) {
         return res.status(400).json({

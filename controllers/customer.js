@@ -70,3 +70,27 @@ exports.pushBillInCustomer = (req, res) => {
     }
   );
 };
+
+// get All customer
+exports.getAllCustomer = async (req, res) => {
+  const limit = parseInt(req.query.rowPerPage) || 10;
+  const page = req.query.page;
+
+  const startIndex = limit * page;
+  const totalCount = await Customer.find().countDocuments();
+
+  Customer.find()
+    .limit(limit)
+    .skip(startIndex)
+    .exec((err, customer) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Something went wrong",
+        });
+      }
+      return res.json({
+        customer,
+        totalCount,
+      });
+    });
+};

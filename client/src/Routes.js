@@ -17,6 +17,9 @@ import SalePanel from "./cashier/SalePanel";
 import AddSalesman from "./manager/AddSalesman";
 import ViewProduct from "./salesupervisor/ViewProduct";
 import SaleSupervisorRoute from "./apicall/Routes/SaleSupervisorRoute";
+import ViewSalesman from "./manager/ViewSalesman";
+import ViewCustomer from "./salesupervisor/ViewCustomer";
+import SaleReport from "./salesupervisor/SaleReport";
 const Routes = () => {
   return (
     <Provider store={store}>
@@ -54,11 +57,26 @@ const Routes = () => {
             path="/admin/add/salesman"
             component={AddSalesman}
           />
+          <ManagerRoute
+            exact
+            path="/admin/view/salesman"
+            component={ViewSalesman}
+          />
           <CashierRoute exact path="/admin/sale" component={SalePanel} />
           <SaleSupervisorRoute
             exact
             path="/admin/view/product"
             component={ViewProduct}
+          />
+          <SaleSupervisorRoute
+            exact
+            path="/admin/view/customer"
+            component={ViewCustomer}
+          />
+          <SaleSupervisorRoute
+            exact
+            path="/admin/report/sale"
+            component={SaleReport}
           />
         </Switch>
       </BrowserRouter>

@@ -639,6 +639,7 @@ const PurchaseEntry = ({ purchaseEntry, Product }) => {
           size="large"
           className={classes.button}
           startIcon={<SaveIcon />}
+          disabled={values.product.length === 0}
           onClick={(e) => {
             e.preventDefault();
             // handlePrint();

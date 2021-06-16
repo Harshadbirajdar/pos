@@ -4,10 +4,13 @@ const {
   checkToken,
   isAuthinticated,
   isCashier,
+  isManager,
+  isSaleSupervisor,
 } = require("../controllers/auth");
 const {
   getCustomerByPhone,
   createCustomer,
+  getAllCustomer,
 } = require("../controllers/customer");
 const { getUserById } = require("../controllers/user");
 const router = express.Router();
@@ -30,6 +33,15 @@ router.post(
   isAuthinticated,
   isCashier,
   createCustomer
+);
+
+router.get(
+  "/:userId/all/customer",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isSaleSupervisor,
+  getAllCustomer
 );
 
 module.exports = router;

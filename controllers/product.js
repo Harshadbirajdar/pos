@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const SupplierInvoice = require("../model/supplierInvoice");
 const Product = require("../model/product");
+const Supplier = require("../model/supplier");
 
 // purchase entry add prodcut
 
@@ -12,21 +13,10 @@ exports.purchaseEntry = (req, res) => {
       error: errors.array()[0].msg,
     });
   }
-  const {
-    billNo,
-    supplier,
-    billAmount,
-    billDate,
-    product,
-    sgst,
-    cgst,
-    igst,
-    transportName,
-  } = req.body;
+  const { product, supplier } = req.body;
 
   Product.insertMany(product, (err, products) => {
     if (err) {
-      console.log(err);
       return res.status(400).json({
         error: "Something went wrong",
       });
@@ -37,7 +27,18 @@ exports.purchaseEntry = (req, res) => {
       product: products,
     });
     supplierInvoice.save((err, invoice) => {
-      res.json(products);
+      Supplier.findByIdAndUpdate(
+        supplier._id,
+        { $push: { invoice } },
+        (err, suplier) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Something went wrong",
+            });
+          }
+          return res.json(products);
+        }
+      );
     });
   });
 };

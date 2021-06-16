@@ -1,4 +1,10 @@
-import { CATEGORY_STATE, SALESMAN_STATE, SUPPLIER_STATE } from "./action.type";
+import {
+  CATEGORY_STATE,
+  CUSTOMER_STATE,
+  REPORT_STATE,
+  SALESMAN_STATE,
+  SUPPLIER_STATE,
+} from "./action.type";
 
 export const spplierState = () => ({
   type: SUPPLIER_STATE,
@@ -10,4 +16,10 @@ export const salesmanState = () => ({
 
 export const categoryState = () => ({
   type: CATEGORY_STATE,
+});
+export const customerState = () => ({
+  type: CUSTOMER_STATE,
+});
+export const reportState = () => ({
+  type: REPORT_STATE,
 });

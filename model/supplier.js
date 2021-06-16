@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { ObjectId } = mongoose.Schema;
 const supplierSchema = new mongoose.Schema(
   {
     name: {
@@ -28,6 +28,7 @@ const supplierSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    invoice: [{ type: ObjectId, ref: "SupplierInvoice" }],
   },
   {
     timestamps: true,

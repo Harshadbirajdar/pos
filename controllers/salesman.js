@@ -61,3 +61,25 @@ exports.testReport = (req, res) => {
     }
   );
 };
+
+exports.viewSalesman = async (req, res) => {
+  const limit = parseInt(req.query.rowPerPage) || 10;
+  const page = parseInt(req.query.page) || 0;
+
+  const startIndex = page * limit;
+
+  const totalCount = await Salesman.find().countDocuments();
+
+  Salesman.find()
+    .limit(limit)
+    .skip(startIndex)
+    .exec((err, salesman) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Something went wrong",
+        });
+      }
+
+      return res.json({ totalCount, salesman });
+    });
+};

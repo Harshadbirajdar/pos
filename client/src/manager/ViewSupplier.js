@@ -7,11 +7,15 @@ import {
   TableBody,
   Paper,
   TablePagination,
+  IconButton,
 } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { isAuthenticated } from "../apicall";
 import Base from "../core/Base";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { getAllSupplier } from "../redux/action/supplier";
 
 const ViewSupplier = ({ getAllSupplier, supplier }) => {
@@ -27,6 +31,7 @@ const ViewSupplier = ({ getAllSupplier, supplier }) => {
               <TableCell style={{ minWidth: 170 }}>Supplier Name</TableCell>
               <TableCell>Contact Number</TableCell>
               <TableCell>Short Name</TableCell>
+              <TableCell>Total Invoice</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -36,6 +41,36 @@ const ViewSupplier = ({ getAllSupplier, supplier }) => {
                 <TableCell>{supplier.name}</TableCell>
                 <TableCell>{supplier.contactNumber}</TableCell>
                 <TableCell>{supplier.shortName}</TableCell>
+                <TableCell>{supplier.invoice.length}</TableCell>
+                <TableCell>
+                  <IconButton
+                    aria-label="view"
+                    // onClick={(e) => {
+                    //   e.preventDefault();
+                    //   getInvoice(invoice.billNo, setDialog);
+                    // }}
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Edit"
+                    // onClick={(e) => {
+                    //   e.preventDefault();
+                    //   getInvoice(invoice.billNo, setDialog);
+                    // }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="delete"
+                    // onClick={(e) => {
+                    //   e.preventDefault();
+                    //   getInvoice(invoice.billNo, setDialog);
+                    // }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

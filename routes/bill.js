@@ -1,5 +1,5 @@
 const express = require("express");
-const { createBill } = require("../controllers/bill");
+const { createBill, getAllBill } = require("../controllers/bill");
 const { pushBillInCustomer } = require("../controllers/customer");
 const { getUserById } = require("../controllers/user");
 const {
@@ -7,6 +7,7 @@ const {
   isSignIn,
   checkToken,
   isAuthinticated,
+  isSaleSupervisor,
 } = require("../controllers/auth");
 const router = express.Router();
 
@@ -22,4 +23,12 @@ router.post(
   pushBillInCustomer
 );
 
+router.get(
+  "/:userId/report/bill",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isSaleSupervisor,
+  getAllBill
+);
 module.exports = router;

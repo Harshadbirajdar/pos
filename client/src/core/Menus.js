@@ -21,9 +21,14 @@ import ReceiptIcon from "@material-ui/icons/Receipt";
 import AccessibilityIcon from "@material-ui/icons/Accessibility";
 import AddIcon from "@material-ui/icons/Add";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
+import FaceIcon from "@material-ui/icons/Face";
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+import AssessmentIcon from "@material-ui/icons/Assessment";
 import { connect } from "react-redux";
 import {
   categoryState,
+  customerState,
+  reportState,
   salesmanState,
   spplierState,
 } from "../redux/action/menu";
@@ -44,6 +49,10 @@ const Menus = ({
   changeCategory,
   changeSalesman,
   Salesman,
+  changeCutomer,
+  Customer,
+  changeReport,
+  Report,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -134,19 +143,40 @@ const Menus = ({
               </ListItem>
             </List>
           </Link>
-          <Link to="/admin/view/supplier">
+          <Link to="/admin/view/salesman">
             <List>
               <ListItem button className={classes.nested}>
                 <ListItemIcon>
                   <PeopleAltIcon />
                 </ListItemIcon>
-                <ListItemText primary="View suplier"></ListItemText>
+                <ListItemText primary="View Salesman"></ListItemText>
               </ListItem>
             </List>
           </Link>
         </List>
       </Collapse>
 
+      <ListItem button onClick={changeCutomer}>
+        <ListItemIcon>
+          <FaceIcon color="primary" />
+        </ListItemIcon>
+        <ListItemText primary="Customer" />
+        {Customer ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={Customer} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <Link to="/admin/view/customer">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <SupervisedUserCircleIcon />
+                </ListItemIcon>
+                <ListItemText primary="View Customer"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+        </List>
+      </Collapse>
       <ListItem button onClick={changeCategory}>
         <ListItemIcon>
           <CategoryIcon color="primary" />
@@ -178,6 +208,38 @@ const Menus = ({
           </Link>
         </List>
       </Collapse>
+      {/* Report */}
+      <ListItem button onClick={changeReport}>
+        <ListItemIcon>
+          <AssessmentIcon color="primary" />
+        </ListItemIcon>
+        <ListItemText primary="Report" />
+        {Report ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={Report} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <Link to="/admin/report/sale">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <ControlPointDuplicateIcon />
+                </ListItemIcon>
+                <ListItemText primary="Sale Report"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+          <Link to="/admin/report/sale">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="View Category"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+        </List>
+      </Collapse>
     </List>
   );
 };
@@ -185,6 +247,8 @@ const mapStateToProps = (state) => ({
   Supplier: state.menu.supplier,
   Category: state.menu.category,
   Salesman: state.menu.salesman,
+  Customer: state.menu.customer,
+  Report: state.menu.report,
 });
 const mapDispatchToProps = (dispatch) => ({
   changeSupplier: () => {
@@ -195,6 +259,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
   changeSalesman: () => {
     dispatch(salesmanState());
+  },
+  changeCutomer: () => {
+    dispatch(customerState());
+  },
+  changeReport: () => {
+    dispatch(reportState());
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Menus);

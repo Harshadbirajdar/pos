@@ -7,7 +7,11 @@ const {
   isManager,
   checkToken,
 } = require("../controllers/auth");
-const { addSalesman, testReport } = require("../controllers/salesman");
+const {
+  addSalesman,
+  testReport,
+  viewSalesman,
+} = require("../controllers/salesman");
 const { check } = require("express-validator");
 router.param("userId", getUserById);
 
@@ -24,6 +28,15 @@ router.post(
   isAuthinticated,
   isManager,
   addSalesman
+);
+
+router.get(
+  "/:userId/all/salesman",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isManager,
+  viewSalesman
 );
 
 router.get("/test/report", testReport);
