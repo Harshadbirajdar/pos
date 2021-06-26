@@ -5,6 +5,9 @@ import {
   GET_ALL_CATEGORY_FAILED,
   GET_ALL_CATEGORY_START,
   GET_ALL_CATEGORY_SUCCESS,
+  GET_CATEGORY_BARCODE_FAILED,
+  GET_CATEGORY_BARCODE_STRAT,
+  GET_CATEGORY_BARCODE_SUCCESS,
 } from "../action/action.type";
 
 const initalState = {
@@ -18,6 +21,12 @@ const initalState = {
   rowPerPage: 10,
   page: 0,
   totalCount: 0,
+  barcode: {
+    loading: false,
+    error: false,
+    success: false,
+    category: {},
+  },
 };
 
 const category = (state = initalState, action) => {
@@ -73,6 +82,35 @@ const category = (state = initalState, action) => {
         all_loading: false,
         all_error: action.payload,
       };
+
+    case GET_CATEGORY_BARCODE_STRAT:
+      return {
+        ...state,
+        barcode: { loading: true, error: false, success: false, category: {} },
+      };
+
+    case GET_CATEGORY_BARCODE_SUCCESS:
+      return {
+        ...state,
+        barcode: {
+          loading: false,
+          error: false,
+          success: true,
+          category: action.payload,
+        },
+      };
+
+    case GET_CATEGORY_BARCODE_FAILED:
+      return {
+        ...state,
+        barcode: {
+          loading: false,
+          error: action.payload,
+          success: false,
+          category: {},
+        },
+      };
+
     default:
       return state;
   }

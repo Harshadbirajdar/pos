@@ -1,5 +1,6 @@
 const Supplier = require("../model/supplier");
 const { validationResult } = require("express-validator");
+const SupplierInvoice = require("../model/supplierInvoice");
 
 // add new party memebrt
 
@@ -77,5 +78,29 @@ exports.getSupplierByName = (req, res) => {
         });
       }
       return res.json(supplier);
+    });
+};
+
+exports.getSupplierInvoice = async (req, res) => {
+  const limit = parseInt(req.query.rowPerPage) || 10;
+  const page = parseInt(req.query.page);
+
+  const startIndex = limit * page;
+
+  const totalCount = await SupplierInvoice.find().countDocuments();
+
+  SupplierInvoice.find()
+    .limit(limit)
+    .skip(startIndex)
+    .exec((err, invoice) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Something went wrong",
+        });
+      }
+      return res.json({
+        invoice,
+        totalCount,
+      });
     });
 };

@@ -24,10 +24,13 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import FaceIcon from "@material-ui/icons/Face";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import AssessmentIcon from "@material-ui/icons/Assessment";
+import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import { connect } from "react-redux";
 import {
   categoryState,
   customerState,
+  productState,
   reportState,
   salesmanState,
   spplierState,
@@ -53,6 +56,8 @@ const Menus = ({
   Customer,
   changeReport,
   Report,
+  changeProduct,
+  Product,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -63,6 +68,16 @@ const Menus = ({
 
   return (
     <List>
+      <Link to="/">
+        <List>
+          <ListItem button>
+            <ListItemIcon>
+              <DashboardIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard"></ListItemText>
+          </ListItem>
+        </List>
+      </Link>
       <Link to="/admin/sale">
         <List>
           <ListItem button>
@@ -73,26 +88,49 @@ const Menus = ({
           </ListItem>
         </List>
       </Link>
-      <Link to="/admin/purchase">
-        <List>
-          <ListItem button className={classes.nested}>
-            <ListItemIcon>
-              <PersonAddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Purchase Entry"></ListItemText>
-          </ListItem>
-        </List>
-      </Link>
-      <Link to="/admin/view/product">
+      <Link to="/admin/exchange">
         <List>
           <ListItem button>
             <ListItemIcon>
-              <FileCopyIcon />
+              <KeyboardReturnIcon color="primary" />
             </ListItemIcon>
-            <ListItemText primary="View Product"></ListItemText>
+            <ListItemText primary="Exchange Panel"></ListItemText>
           </ListItem>
         </List>
       </Link>
+
+      <ListItem button onClick={changeProduct}>
+        <ListItemIcon>
+          <SupervisorAccountIcon color="primary" />
+        </ListItemIcon>
+        <ListItemText primary="Product" />
+        {Product ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={Product} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <Link to="/admin/view/product">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <FileCopyIcon />
+                </ListItemIcon>
+                <ListItemText primary="View Product"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+          {/*  */}
+          <Link to="/admin/purchase">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <PersonAddIcon />
+                </ListItemIcon>
+                <ListItemText primary="Purchase Entry"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+        </List>
+      </Collapse>
       <ListItem button onClick={changeSupplier}>
         <ListItemIcon>
           <SupervisorAccountIcon color="primary" />
@@ -206,6 +244,16 @@ const Menus = ({
               </ListItem>
             </List>
           </Link>
+          <Link to="/admin/add/barcode/category">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="Add Barcode Category"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
         </List>
       </Collapse>
       {/* Report */}
@@ -249,6 +297,7 @@ const mapStateToProps = (state) => ({
   Salesman: state.menu.salesman,
   Customer: state.menu.customer,
   Report: state.menu.report,
+  Product: state.menu.product,
 });
 const mapDispatchToProps = (dispatch) => ({
   changeSupplier: () => {
@@ -265,6 +314,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   changeReport: () => {
     dispatch(reportState());
+  },
+  changeProduct: () => {
+    dispatch(productState());
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Menus);

@@ -1,6 +1,7 @@
 import {
   CATEGORY_STATE,
   CUSTOMER_STATE,
+  PRODUCT_STATE,
   REPORT_STATE,
   SALESMAN_STATE,
   SUPPLIER_STATE,
@@ -14,6 +15,7 @@ const initalState = {
   category: false,
   customer: false,
   report: false,
+  product: false,
 };
 
 const menu = (state = initalState, action) => {
@@ -31,6 +33,8 @@ const menu = (state = initalState, action) => {
 
     case REPORT_STATE:
       return { ...state, report: !state.report };
+    case PRODUCT_STATE:
+      return { ...state, product: !state.product };
     default:
       return state;
   }

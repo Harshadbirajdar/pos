@@ -5,12 +5,19 @@ import {
   GENRATE_BILL_FAILED,
   GENRATE_BILL_START,
   GENRATE_BILL_SUCCESS,
+  GET_CATEGORY_BARCODE_STRAT,
   GET_CUSTOMER_BY_NUMBER_FOR_SALE_FAILED,
   GET_CUSTOMER_BY_NUMBER_FOR_SALE_START,
   GET_CUSTOMER_BY_NUMBER_FOR_SALE_SUCCESS,
   GET_PRODUCT_BY_BARCODE_FAILED,
   GET_PRODUCT_BY_BARCODE_START,
   GET_PRODUCT_BY_BARCODE_SUCCESS,
+  GET_CATEGORY_BARCODE_SUCCESS,
+  GET_CATEGORY_BARCODE_FAILED,
+  GET_CATEGORY_BARCODE_NAME_START,
+  GET_CATEGORY_BARCODE_NAME_SUCCESS,
+  GET_CATEGORY_BARCODE_NAME_FAILED,
+  GET_CATEGORY_BARCODE_CLEAR,
 } from "../action/action.type";
 
 const initalState = {
@@ -30,6 +37,16 @@ const initalState = {
     bill: {
       product: [],
     },
+  },
+  categoryBarcode: {
+    loading: true,
+    error: false,
+    product: {},
+  },
+  barcodeName: {
+    loading: true,
+    error: false,
+    product: [],
   },
 };
 
@@ -105,6 +122,58 @@ const sale = (state = initalState, action) => {
       return {
         ...state,
         bill: { loading: false, error: action.payload, bill: {} },
+      };
+
+    case GET_CATEGORY_BARCODE_STRAT:
+      return {
+        ...state,
+        categoryBarcode: { loading: true, error: false, product: {} },
+      };
+    case GET_CATEGORY_BARCODE_SUCCESS:
+      return {
+        ...state,
+        categoryBarcode: {
+          loading: false,
+          error: false,
+          product: action.payload,
+        },
+      };
+    case GET_CATEGORY_BARCODE_FAILED:
+      return {
+        ...state,
+        categoryBarcode: {
+          loading: false,
+          error: action.payload,
+          product: {},
+        },
+      };
+
+    case GET_CATEGORY_BARCODE_CLEAR:
+      return {
+        ...state,
+        categoryBarcode: {
+          loading: false,
+          error: false,
+          product: {},
+        },
+      };
+
+    case GET_CATEGORY_BARCODE_NAME_START:
+      return {
+        ...state,
+        barcodeName: { loading: true, error: false, product: [] },
+      };
+
+    case GET_CATEGORY_BARCODE_NAME_SUCCESS:
+      return {
+        ...state,
+        barcodeName: { loading: false, error: false, product: action.payload },
+      };
+
+    case GET_CATEGORY_BARCODE_NAME_FAILED:
+      return {
+        ...state,
+        barcodeName: { loading: false, error: action.payload, product: [] },
       };
 
     default:

@@ -159,7 +159,7 @@ const PurchaseEntry = ({ purchaseEntry, Product }) => {
                 key={index}
                 onClick={(e) => {
                   let product = values.product;
-                  console.log(product[index]);
+
                   setProducts({ ...product[index] });
                   product.splice(index, 1);
                   setValues({ ...values, product });

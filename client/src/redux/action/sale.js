@@ -15,6 +15,13 @@ import {
   GENRATE_BILL_START,
   GENRATE_BILL_SUCCESS,
   GENRATE_BILL_FAILED,
+  GET_CATEGORY_BARCODE_STRAT,
+  GET_CATEGORY_BARCODE_SUCCESS,
+  GET_CATEGORY_BARCODE_FAILED,
+  GET_CATEGORY_BARCODE_NAME_START,
+  GET_CATEGORY_BARCODE_NAME_SUCCESS,
+  GET_CATEGORY_BARCODE_NAME_FAILED,
+  GET_CATEGORY_BARCODE_CLEAR,
 } from "./action.type";
 
 const getProdcutByBarcodeStart = () => ({
@@ -90,8 +97,7 @@ export const getProductByBarcode = (
         }
 
         setValues({ ...values, product });
-        setProduct({ barcode: "", salesman: "", qty: "" });
-        console.log(response);
+        setProduct({ barcode: "", salesman: "", qty: "", price: "" });
 
         dispatch(getProdcutByBarcodeSuccess(response.data));
         salesmanRef.current.focus();
@@ -205,7 +211,7 @@ const genrateBillFailed = (error) => ({
   payload: error,
 });
 
-export const genrateBill = (values, setValues) => {
+export const genrateBill = (values, setValues, numberRef) => {
   const { user, token } = isAuthenticated();
   return (dispatch) => {
     dispatch(genrateBillStart());
@@ -220,9 +226,91 @@ export const genrateBill = (values, setValues) => {
           product: [],
         });
         dispatch(genrateBillSuccess(response.data));
+        numberRef.current.focus();
       })
       .catch((err) => {
         dispatch(genrateBillFailed(err.response.data.error));
+      });
+  };
+};
+
+const getCategoryBarcodeStart = () => ({
+  type: GET_CATEGORY_BARCODE_STRAT,
+});
+const getCategoryBarcodeSuccess = (cateogry) => ({
+  type: GET_CATEGORY_BARCODE_SUCCESS,
+  payload: cateogry,
+});
+
+const getCategoryBarcodeFailed = (error) => ({
+  type: GET_CATEGORY_BARCODE_FAILED,
+  payload: error,
+});
+
+export const getCategoryBarcodeClear = () => ({
+  type: GET_CATEGORY_BARCODE_CLEAR,
+});
+
+export const getCategoryBarcode = (
+  barcode,
+  qtyRef,
+  prodcut,
+  setProduct,
+  setOpen
+) => {
+  const { user, token } = isAuthenticated();
+  return (dispatch) => {
+    dispatch(getCategoryBarcodeStart());
+
+    axios
+      .get(`${API}/${user._id}/category/barcode?barcode=${barcode}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        dispatch(getCategoryBarcodeSuccess(response.data));
+        setProduct({ ...prodcut, barcode: response.data.barcode });
+        qtyRef.current.focus();
+      })
+      .catch((err) => {
+        setOpen(true);
+        dispatch(getCategoryBarcodeFailed(err.response.data.error));
+      });
+  };
+};
+
+const getCategoryBarcodeNameStart = () => ({
+  type: GET_CATEGORY_BARCODE_NAME_START,
+});
+
+const getCategoryBarcodeNameSuccess = (category) => ({
+  type: GET_CATEGORY_BARCODE_NAME_SUCCESS,
+  payload: category,
+});
+
+const getCategoryBarcodeNameFailed = (error) => ({
+  type: GET_CATEGORY_BARCODE_NAME_FAILED,
+  payload: error,
+});
+
+export const getCategoryBarcodeName = () => {
+  const { user, token } = isAuthenticated();
+  return (dispatch) => {
+    dispatch(getCategoryBarcodeNameStart());
+
+    axios
+      .get(`${API}/${user._id}/category/barcode/name`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        dispatch(getCategoryBarcodeNameSuccess(response.data));
+      })
+      .catch((err) => {
+        dispatch(getCategoryBarcodeNameFailed(err.response.data.error));
       });
   };
 };

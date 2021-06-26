@@ -10,6 +10,7 @@ const {
   createSupplier,
   getAllSupplier,
   getSupplierByName,
+  getSupplierInvoice,
 } = require("../controllers/supplier");
 const { getUserById } = require("../controllers/user");
 const router = express.Router();
@@ -53,5 +54,9 @@ router.get(
   isManager,
   getSupplierByName
 );
+
+// get All Invoice
+
+router.get("/supplier/invoice", getSupplierInvoice);
 
 module.exports = router;

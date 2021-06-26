@@ -5,6 +5,9 @@ import {
   GET_ALL_CATEGORY_FAILED,
   GET_ALL_CATEGORY_START,
   GET_ALL_CATEGORY_SUCCESS,
+  GET_CATEGORY_BARCODE_FAILED,
+  GET_CATEGORY_BARCODE_STRAT,
+  GET_CATEGORY_BARCODE_SUCCESS,
 } from "./action.type";
 import axios from "axios";
 import { isAuthenticated } from "../../apicall";
@@ -86,6 +89,52 @@ export const getAllCategory = (rowPerPage, page) => {
       })
       .catch((err) => {
         dispatch(getAllCategoryFailed(err.response.data.error));
+      });
+  };
+};
+
+const getCategoryBarcodeStart = () => ({
+  type: GET_CATEGORY_BARCODE_STRAT,
+});
+
+const getCategoryBarcodeSuccess = (category) => ({
+  type: GET_CATEGORY_BARCODE_SUCCESS,
+  payload: category,
+});
+
+const getCategoryBarcodeFailed = (error) => ({
+  type: GET_CATEGORY_BARCODE_FAILED,
+  payload: error,
+});
+
+export const getCategoryBarcode = (values, setVales, setOpen) => {
+  const { user, token } = isAuthenticated();
+  return (dispatch) => {
+    dispatch(getCategoryBarcodeStart());
+
+    axios
+      .post(`${API}/${user._id}/category/barcode`, values, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        dispatch(getCategoryBarcodeSuccess(response.data));
+        setVales({
+          name: "",
+          commision: "",
+          commisionBase: 0,
+          hsn: "",
+          gstAmount: "",
+          gstGreater: "",
+          gstLesser: "",
+          barcode: "",
+        });
+        setOpen(true);
+      })
+      .catch((err) => {
+        dispatch(getCategoryBarcodeFailed(err.response.data.error));
+        setOpen(true);
       });
   };
 };

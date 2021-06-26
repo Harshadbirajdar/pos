@@ -1,6 +1,7 @@
 import {
   CATEGORY_STATE,
   CUSTOMER_STATE,
+  PRODUCT_STATE,
   REPORT_STATE,
   SALESMAN_STATE,
   SUPPLIER_STATE,
@@ -22,4 +23,7 @@ export const customerState = () => ({
 });
 export const reportState = () => ({
   type: REPORT_STATE,
+});
+export const productState = () => ({
+  type: PRODUCT_STATE,
 });

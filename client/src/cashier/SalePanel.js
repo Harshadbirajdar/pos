@@ -23,8 +23,11 @@ import { useReactToPrint } from "react-to-print";
 import {
   AddNewCustomer,
   genrateBill,
+  getCategoryBarcode,
   getCustomerByPhone,
   getProductByBarcode,
+  getCategoryBarcodeName,
+  getCategoryBarcodeClear,
 } from "../redux/action/sale";
 import BillPrint from "../components/BillPrint";
 
@@ -43,6 +46,11 @@ const SalePanel = ({
   addCustomer,
   genrateBill,
   Bill,
+  getCategoryBarcode,
+  CategoryBarcode,
+  barcodeName,
+  BarcodeName,
+  clearBarcode,
 }) => {
   const componentRef = useRef();
   const [page, setPage] = useState(`@page { size:79mm 200px;margin:0}`);
@@ -64,17 +72,10 @@ const SalePanel = ({
     },
   });
 
-  const top100Films = [
-    { title: "The Shawshank Redemption", year: 1994 },
-    { title: "The Godfather", year: 1972 },
-    { title: "The Godfather: Part II", year: 1974 },
-    { title: "The Dark Knight", year: 2008 },
-    { title: "12 Angry Men", year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: "Pulp Fiction", year: 1994 },
-    { title: "The Lord of the Rings: The Return of the King", year: 2003 },
-    { title: "The Good, the Bad and the Ugly", year: 1966 },
-  ];
+  useEffect(() => {
+    barcodeName();
+  }, []);
+
   const classes = useStyles();
   const [values, setValues] = useState({
     product: [],
@@ -84,16 +85,21 @@ const SalePanel = ({
     // },
     amount: 0,
   });
+  const [error, setError] = useState(false);
   const [prodcut, setProduct] = useState({
     salesman: "",
     barcode: "",
     price: "",
     qty: "",
+    barcodeName: "",
   });
   const inputRef = useRef();
   const salesmanRef = useRef();
   const formRef = useRef();
   const nameRef = useRef();
+  const qtyRef = useRef();
+  const priceRef = useRef();
+  const numberRef = useRef();
   const [open, setOpen] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -117,7 +123,7 @@ const SalePanel = ({
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="error">
-          {Barcode.error}
+          {Barcode.error || error || CategoryBarcode.error}
         </Alert>
       </Snackbar>
     );
@@ -125,18 +131,63 @@ const SalePanel = ({
   const onhandleChange = (name) => (event) => {
     setProduct({ ...prodcut, [name]: event.target.value });
   };
-
-  useEffect(() => {
+  const countTotalAmount = () => {
     setValues({
       ...values,
       amount: values.product.reduce((a, b) => a + b.amount, 0),
     });
+  };
+
+  const onPriceEnterKey = (e) => {
+    let product = {};
+    if (e.code === "Enter" || e.code === "NumpadEnter") {
+      product.salesman = prodcut.salesman;
+      product.barcode = prodcut.barcode;
+      product.barcode = prodcut.barcode;
+      product.price = prodcut.price;
+      product.qty = prodcut.qty;
+      product.amount = parseFloat((product.qty * product.price).toFixed(2));
+      product.name = CategoryBarcode.product.name;
+      product.hsn = CategoryBarcode.product.hsn;
+      product.isQtyOne = CategoryBarcode.product.isQtyOne;
+      let calculate;
+      if (CategoryBarcode.product.commisionBase === 0) {
+        calculate = (product.amount * CategoryBarcode.product.commision) / 100;
+        calculate = Math.round(calculate / 0.5) * 0.5;
+      } else {
+        calculate = CategoryBarcode.product.commision;
+      }
+      product.commission = calculate;
+
+      if (CategoryBarcode.product.gstAmount < product.price) {
+        product.gst = CategoryBarcode.product.gstGreater;
+      } else {
+        product.gst = CategoryBarcode.product.gstLesser;
+      }
+
+      let Product = values.product;
+      Product.push(product);
+      setValues({ ...values, product: Product });
+      // salesmanRef.current.focus();
+      console.log(salesmanRef.current.focus());
+      countTotalAmount();
+      setProduct({ salesman: "", barcode: "", price: "", qty: "" });
+      clearBarcode();
+    }
+  };
+
+  useEffect(() => {
+    countTotalAmount();
   }, [values.product]);
   return (
     <Base title="Sale Panel">
       <div
         onKeyDown={(e) => {
-          console.log(e);
+          if (values.product.length !== 0 && e.code === "F2") {
+            e.preventDefault();
+
+            genrateBill(values, setValues, numberRef);
+          }
         }}
       >
         <Container>
@@ -152,6 +203,7 @@ const SalePanel = ({
                     fullWidth
                     label="Phone Number"
                     type="Number"
+                    inputRef={numberRef}
                     value={values.customer?.phoneNumber || ""}
                     onChange={(e) => {
                       setValues({
@@ -162,7 +214,7 @@ const SalePanel = ({
                         },
                       });
                     }}
-                    onKeyPress={(e) => {
+                    onKeyDown={(e) => {
                       if (e.code === "Enter" || e.code === "NumpadEnter") {
                         getCustomer(values, setValues, salesmanRef, nameRef);
                       }
@@ -191,8 +243,8 @@ const SalePanel = ({
                         },
                       });
                     }}
-                    onKeyPress={(e) => {
-                      if (e.charCode === 13) {
+                    onKeyDown={(e) => {
+                      if (e.code === "Enter" || e.code === "NumpadEnter") {
                         addCustomer(values, setValues, salesmanRef);
                       }
                     }}
@@ -207,7 +259,7 @@ const SalePanel = ({
                       fontSize: "20px",
                     }}
                   >
-                    <h1>{values.amount}</h1>
+                    <h1>{parseInt(values.amount)}</h1>
                   </div>
                 </Grid>
               </Grid>
@@ -224,8 +276,8 @@ const SalePanel = ({
                     name="salesman"
                     inputRef={salesmanRef}
                     value={prodcut.salesman}
-                    onKeyPress={(e) => {
-                      if (e.charCode === 13) {
+                    onKeyDown={(e) => {
+                      if (e.code === "Enter" || e.code === "NumpadEnter") {
                         inputRef.current.focus();
                       }
                       // console.log();
@@ -245,17 +297,27 @@ const SalePanel = ({
                     value={prodcut.barcode}
                     inputRef={inputRef}
                     onChange={onhandleChange("barcode")}
-                    onKeyPress={(e) => {
-                      if (e.charCode === 13) {
-                        getProductByBarcode(
-                          prodcut.barcode,
-                          values,
-                          setValues,
-                          prodcut,
-                          setProduct,
-                          setOpen,
-                          salesmanRef
-                        );
+                    onKeyDown={(e) => {
+                      if (e.code === "NumpadEnter" || e.code === "Enter") {
+                        if (prodcut.barcode > 150) {
+                          getProductByBarcode(
+                            prodcut.barcode,
+                            values,
+                            setValues,
+                            prodcut,
+                            setProduct,
+                            setOpen,
+                            salesmanRef
+                          );
+                        } else {
+                          getCategoryBarcode(
+                            prodcut.barcode,
+                            qtyRef,
+                            prodcut,
+                            setProduct,
+                            setOpen
+                          );
+                        }
                       }
                     }}
                     //   value={values.name}
@@ -265,13 +327,23 @@ const SalePanel = ({
                 <Grid item style={{ marginTop: "1em" }}>
                   <Autocomplete
                     id="combo-box-demo"
-                    options={top100Films}
-                    getOptionLabel={(option) => option.title}
+                    options={BarcodeName.product}
+                    getOptionLabel={(option) => option.name}
                     style={{ width: 300 }}
+                    value={CategoryBarcode.product}
+                    onChange={(e, value) => {
+                      getCategoryBarcode(
+                        value.barcode,
+                        qtyRef,
+                        prodcut,
+                        setProduct,
+                        setOpen
+                      );
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Combo box"
+                        label="Category"
                         variant="outlined"
                       />
                     )}
@@ -287,7 +359,18 @@ const SalePanel = ({
                     label="Qty"
                     name="qty"
                     type="Number"
+                    inputRef={qtyRef}
                     value={prodcut.qty}
+                    onKeyDown={(e) => {
+                      if (e.code === "Enter" || e.code === "NumpadEnter") {
+                        if (prodcut.qty === "") {
+                          setError("Please enter the Qty");
+                          setOpen(true);
+                        } else {
+                          priceRef.current.focus();
+                        }
+                      }
+                    }}
                     onChange={onhandleChange("qty")}
                   />
                 </Grid>
@@ -299,8 +382,11 @@ const SalePanel = ({
                     fullWidth
                     label="Rate"
                     type="Number"
-                    //   value={values.name}
-                    //   onChange={onhandleChange("name")}
+                    name="price"
+                    inputRef={priceRef}
+                    value={prodcut.price}
+                    onChange={onhandleChange("price")}
+                    onKeyDown={onPriceEnterKey}
                   />
                 </Grid>
               </Grid>
@@ -343,7 +429,7 @@ const SalePanel = ({
               onClick={(e) => {
                 e.preventDefault();
 
-                genrateBill(values, setValues);
+                genrateBill(values, setValues, nameRef);
               }}
               disabled={values.product.length === 0}
               className={classes.button}
@@ -355,7 +441,7 @@ const SalePanel = ({
           {/* <Grid container>
           <Grid></Grid>
         </Grid> */}
-          {console.log(Bill.bill.product.length)}
+
           {Bill.bill.product.length !== 0 && (
             <BillPrint bill={Bill.bill} ref={componentRef} />
           )}
@@ -369,6 +455,8 @@ const SalePanel = ({
 const mapStateToProps = (state) => ({
   Barcode: state.sale.barcode,
   Bill: state.sale.bill,
+  CategoryBarcode: state.sale.categoryBarcode,
+  BarcodeName: state.sale.barcodeName,
 });
 const mapDispatchToProps = (dispatch) => ({
   getProductByBarcode: (
@@ -398,8 +486,17 @@ const mapDispatchToProps = (dispatch) => ({
   addCustomer: (values, setValues, salesmanRef) => {
     dispatch(AddNewCustomer(values, setValues, salesmanRef));
   },
-  genrateBill: (values, setValues) => {
-    dispatch(genrateBill(values, setValues));
+  genrateBill: (values, setValues, numberRef) => {
+    dispatch(genrateBill(values, setValues, numberRef));
+  },
+  getCategoryBarcode: (barcode, qtyRef, prodcut, setProduct, setOpen) => {
+    dispatch(getCategoryBarcode(barcode, qtyRef, prodcut, setProduct, setOpen));
+  },
+  barcodeName: () => {
+    dispatch(getCategoryBarcodeName());
+  },
+  clearBarcode: () => {
+    dispatch(getCategoryBarcodeClear());
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(SalePanel);

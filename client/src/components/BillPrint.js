@@ -22,7 +22,15 @@ const BillPrint = React.forwardRef((props, ref) => {
       .filter(({ gst }) => gst === 5)
       .reduce((t, c) => t + c.amount, 0)
   );
-  const [qty, setQty] = useState(bill.product.reduce((t, c) => t + c.qty, 0));
+  const [qty, setQty] = useState(
+    bill.product.reduce((t, c) => {
+      if (c.isQtyOne) {
+        return t + 1;
+      } else {
+        return t + c.qty;
+      }
+    }, 0)
+  );
 
   const gstTable = (gst, percentage) => {
     let taxableAmount = gst * (100 / (100 + percentage));
@@ -141,14 +149,30 @@ const BillPrint = React.forwardRef((props, ref) => {
               </TableRow>
             ))}
           <TableRow>
-            <TableCell style={{ fontSize: "1.2em" }}>
+            <TableCell style={{ fontSize: "1.1em" }}>
               Qty :<strong>{qty}</strong>
             </TableCell>
             <TableCell
-              style={{ padding: "1em", textAlign: "right", fontSize: "1.2em" }}
+              style={{ padding: "1em", textAlign: "right", fontSize: "1em" }}
               colSpan={4}
             >
-              Total Amount :<strong>{bill.amount}</strong>
+              Total Amount :<strong>{bill.amount.toFixed(2)}</strong>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell
+              style={{
+                textAlign: "right",
+                fontSize: "1.2em",
+                paddingRight: "1em",
+              }}
+              colSpan={5}
+            >
+              <span style={{ textAlign: "right", fontSize: "0.8em" }}>
+                Round Off {(-bill.amount + parseInt(bill.amount)).toFixed(2)}
+              </span>
+              <br />
+              Net Payable: <strong> {parseInt(bill.amount)}</strong>
             </TableCell>
           </TableRow>
         </TableBody>

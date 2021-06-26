@@ -14,6 +14,7 @@ const billSchema = new mongoose.Schema({
   amount: {
     type: Number,
   },
+
   product: [
     {
       _id: {
@@ -46,6 +47,10 @@ const billSchema = new mongoose.Schema({
       },
       salesman: {
         type: Number,
+      },
+      isQtyOne: {
+        type: Boolean,
+        default: false,
       },
     },
   ],

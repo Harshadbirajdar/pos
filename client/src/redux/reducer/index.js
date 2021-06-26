@@ -9,6 +9,7 @@ import menu from "./menu";
 import product from "./product";
 import customer from "./customer";
 import report from "./report";
+import exchange from "./exchange";
 export default combineReducers({
   supplier,
   category,
@@ -20,4 +21,5 @@ export default combineReducers({
   product,
   customer,
   report,
+  exchange,
 });

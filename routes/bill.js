@@ -1,5 +1,11 @@
 const express = require("express");
-const { createBill, getAllBill } = require("../controllers/bill");
+const {
+  createBill,
+  getAllBill,
+  getDayReportSummery,
+  getBillByBarcode,
+  getWeeklyChartData,
+} = require("../controllers/bill");
 const { pushBillInCustomer } = require("../controllers/customer");
 const { getUserById } = require("../controllers/user");
 const {
@@ -8,6 +14,7 @@ const {
   checkToken,
   isAuthinticated,
   isSaleSupervisor,
+  isManager,
 } = require("../controllers/auth");
 const router = express.Router();
 
@@ -30,5 +37,25 @@ router.get(
   isAuthinticated,
   isSaleSupervisor,
   getAllBill
+);
+
+router.get("/test/print", getDayReportSummery);
+
+router.get(
+  "/:userId/bill/barcode",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isCashier,
+  getBillByBarcode
+);
+
+router.get(
+  "/:userId/bill/chart",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isManager,
+  getWeeklyChartData
 );
 module.exports = router;
