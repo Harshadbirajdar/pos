@@ -23,6 +23,7 @@ import SaleReport from "./salesupervisor/SaleReport";
 import ExchangePanel from "./cashier/ExchangePanel";
 import AddCategoryWithoutPrice from "./manager/AddCategoryWithoutPrice";
 import AdminDashboard from "./cashier/AdminDashboard";
+import SalesmanReport from "./salesupervisor/SalesmanReport";
 const Routes = () => {
   return (
     <Provider store={store}>
@@ -85,6 +86,11 @@ const Routes = () => {
             exact
             path="/admin/report/sale"
             component={SaleReport}
+          />
+          <SaleSupervisorRoute
+            exact
+            path="/admin/report/salesman"
+            component={SalesmanReport}
           />
           <CashierRoute
             exact

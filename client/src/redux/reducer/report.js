@@ -2,6 +2,9 @@ const {
   GET_BILL_REPORT_STRAT,
   GET_BILL_REPORT_SUCCESS,
   GET_BILL_REPORT_FAILED,
+  GET_SALESMAN_REPORT_STRAT,
+  GET_SALESMAN_REPORT_SUCCESS,
+  GET_SALESMAN_REPORT_FAILED,
 } = require("../action/action.type");
 
 const initalState = {
@@ -12,6 +15,11 @@ const initalState = {
     page: 0,
     totalCount: "",
     bill: [],
+  },
+  salesman: {
+    loading: false,
+    error: false,
+    salesman: [],
   },
 };
 
@@ -41,6 +49,36 @@ const report = (state = initalState, action) => {
           error: action.payload,
           bill: [],
           loading: false,
+        },
+      };
+    case GET_SALESMAN_REPORT_STRAT:
+      return {
+        ...state,
+        salesman: {
+          loading: true,
+
+          error: false,
+          salesman: [],
+        },
+      };
+    case GET_SALESMAN_REPORT_SUCCESS:
+      return {
+        ...state,
+        salesman: {
+          loading: false,
+
+          error: false,
+          salesman: action.payload,
+        },
+      };
+    case GET_SALESMAN_REPORT_FAILED:
+      return {
+        ...state,
+        salesman: {
+          loading: false,
+
+          error: action.payload,
+          salesman: [],
         },
       };
     default:

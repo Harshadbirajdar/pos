@@ -27,39 +27,34 @@ exports.addSalesman = (req, res) => {
   });
 };
 
-exports.testReport = (req, res) => {
-  console.log(new Date(req.query.date));
-  Bill.find(
-    { createdAt: { $gte: new Date(req.query.date) } },
-    "product",
-    (err, product) => {
-      let salesman = [];
-      let finalSalesman = [];
-      product.map((p) => {
-        p.product.map((pr) => {
-          let c = {
-            salesman: pr.salesman,
-            commission: pr.commission,
-          };
-
-          salesman.push(c);
-        });
-      });
-
-      for (let index = 0; index < salesman.length; index++) {
-        for (
-          let secondIndex = index;
-          secondIndex < salesman.length;
-          secondIndex++
-        ) {
-          if (salesman[index].salesman === salesman[secondIndex].salesman) {
-            salesman.commission = +salesman.commission;
-          }
-        }
-      }
-      return res.json(salesman);
-    }
+exports.getSalesmanCommision = async (req, res) => {
+  const startDate = new Date(
+    new Date(req.query.startDate).setHours(00, 00, 00)
   );
+  const endDate = new Date(new Date(req.query.endDate).setHours(23, 59, 59));
+
+  Bill.find({ createdAt: { $gte: startDate, $lte: endDate } })
+  .exec((err, product) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Something Went wrong",
+      });
+    }
+
+    let commission = {};
+    product.map((p) => {
+      p.product.map((pr) => {
+        let number = pr.salesman;
+
+        commission[number] =
+          commission[number] === undefined
+            ? pr.commission
+            : commission[number] + pr.commission;
+      });
+    });
+
+    return res.json(commission);
+  });
 };
 
 exports.viewSalesman = async (req, res) => {

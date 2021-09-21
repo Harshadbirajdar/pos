@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import Base from "../core/Base";
 import { getAllProduct } from "../redux/action/product";
 import moment from "moment";
+import { ExportCsv } from "../components/ExportCsv";
 const ViewProduct = ({ fetchProduct, Product }) => {
   useEffect(() => {
     fetchProduct(Product.rowPerPage, Product.page);
@@ -21,6 +22,7 @@ const ViewProduct = ({ fetchProduct, Product }) => {
   return (
     <Base title="All Products">
       <TableContainer component={Paper} style={{ maxWidth: "90vw" }}>
+        <ExportCsv csvData={Product.product} fileName="harshad" />
         <Table>
           <TableHead stickyHeader>
             <TableRow>

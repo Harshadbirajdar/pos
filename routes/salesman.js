@@ -9,7 +9,7 @@ const {
 } = require("../controllers/auth");
 const {
   addSalesman,
-  testReport,
+  getSalesmanCommision,
   viewSalesman,
 } = require("../controllers/salesman");
 const { check } = require("express-validator");
@@ -39,6 +39,13 @@ router.get(
   viewSalesman
 );
 
-router.get("/test/report", testReport);
+router.get(
+  "/:userId/salesman/commission",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isManager,
+  getSalesmanCommision
+);
 
 module.exports = router;

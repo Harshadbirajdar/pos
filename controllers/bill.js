@@ -1,7 +1,6 @@
 const Bill = require("../model/bill");
 const Salesman = require("../model/salesman");
 const Product = require("../model/product");
-const bill = require("../model/bill");
 
 exports.createBill = async (req, res, next) => {
   let bill = new Bill(req.body);
@@ -116,14 +115,14 @@ exports.getBillByBarcode = (req, res) => {
 };
 
 exports.getWeeklyChartData = (req, res) => {
-  let currentDate = new Date();
-
+  let currentDate = req.query.date ? new Date(req.query.date) : new Date();
   let month = currentDate.getMonth();
   let year = currentDate.getFullYear();
   let date = currentDate.getDate();
 
   let startWeek = new Date(year, month, date - currentDate.getDay());
   let endWeek = new Date(year, month, date - currentDate.getDay() + 7);
+  console.log(startWeek);
 
   Bill.find({ createdAt: { $gte: startWeek, $lte: endWeek } })
     .select("amount createdAt")

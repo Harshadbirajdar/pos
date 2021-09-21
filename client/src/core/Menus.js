@@ -26,6 +26,7 @@ import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import AssessmentIcon from "@material-ui/icons/Assessment";
 import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import DonutSmallIcon from "@material-ui/icons/DonutSmall";
 import { connect } from "react-redux";
 import {
   categoryState,
@@ -276,13 +277,13 @@ const Menus = ({
               </ListItem>
             </List>
           </Link>
-          <Link to="/admin/report/sale">
+          <Link to="/admin/report/salesman">
             <List>
               <ListItem button className={classes.nested}>
                 <ListItemIcon>
-                  <CategoryIcon />
+                  <DonutSmallIcon />
                 </ListItemIcon>
-                <ListItemText primary="View Category"></ListItemText>
+                <ListItemText primary="Salesman Report"></ListItemText>
               </ListItem>
             </List>
           </Link>

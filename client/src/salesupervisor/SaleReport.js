@@ -35,6 +35,7 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import moment from "moment";
 import BillPrint from "../components/BillPrint";
 import { useReactToPrint } from "react-to-print";
+import { ExportCsv } from "../components/ExportCsv";
 
 const styles = (theme) => ({
   root: {
@@ -126,6 +127,7 @@ const SaleReport = ({ fetchBillReport, Bill }) => {
       <Container>
         {CustomeDialog()}
         <Paper>
+          <ExportCsv csvData={Bill.bill} fileName="test" />
           <Grid container justify="space-around">
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid item md={2}>

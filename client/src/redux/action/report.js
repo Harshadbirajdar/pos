@@ -5,6 +5,9 @@ const {
   GET_BILL_REPORT_STRAT,
   GET_BILL_REPORT_SUCCESS,
   GET_BILL_REPORT_FAILED,
+  GET_SALESMAN_REPORT_STRAT,
+  GET_SALESMAN_REPORT_SUCCESS,
+  GET_SALESMAN_REPORT_FAILED,
 } = require("./action.type");
 
 const getBillReportStrat = () => ({
@@ -41,6 +44,44 @@ export const getBillReport = (rowPerPage, page, startDate, endDate, sort) => {
       })
       .catch((err) => {
         dispacth(getBillReportFailed(err.response.data.error));
+      });
+  };
+};
+
+const getSalesmanReportStrat = () => ({
+  type: GET_SALESMAN_REPORT_STRAT,
+});
+
+const getSalesmanReportSuccess = (data) => ({
+  type: GET_SALESMAN_REPORT_SUCCESS,
+  payload: data,
+});
+
+const getSalesmanReportFailed = (error) => ({
+  type: GET_SALESMAN_REPORT_FAILED,
+  payload: error,
+});
+
+export const getSalesmanReport = (startDate, endDate) => {
+  const { user, token } = isAuthenticated();
+
+  return (dispatch) => {
+    dispatch(getSalesmanReportStrat());
+
+    axios
+      .get(
+        `${API}/${user._id}/salesman/commission?startDate=${startDate}&endDate=${endDate}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        dispatch(getSalesmanReportSuccess(response.data));
+      })
+      .catch((err) => {
+        dispatch(getSalesmanReportFailed(err.response.data.error));
       });
   };
 };

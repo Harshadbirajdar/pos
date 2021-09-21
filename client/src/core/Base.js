@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
+import ReceiptIcon from "@material-ui/icons/Receipt";
+
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -22,6 +24,8 @@ import FullscreenIcon from "@material-ui/icons/Fullscreen";
 import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
 import { connect } from "react-redux";
 import { switchScreenMode } from "../redux/action/screen";
+import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
+import { Link, withRouter } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -83,7 +87,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Base = ({ children, title, isFullScreen, changeScreen }) => {
+const Base = ({
+  children,
+  title,
+  isFullScreen,
+  changeScreen,
+  sale,
+  history,
+  exchange,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -118,20 +130,46 @@ const Base = ({ children, title, isFullScreen, changeScreen }) => {
           <Typography variant="h6" noWrap>
             {title}
           </Typography>
-          <IconButton
+          <div
             style={{
               marginLeft: "auto",
-              marginRight: "1.5em",
             }}
-            onClick={changeScreen}
-            color="inherit"
           >
-            {isFullScreen ? (
-              <FullscreenExitIcon fontSize="large" />
-            ) : (
-              <FullscreenIcon fontSize="large" />
+            {sale && (
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  history.push("/admin/exchange");
+                }}
+              >
+                <KeyboardReturnIcon />
+              </IconButton>
             )}
-          </IconButton>
+            {exchange && (
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  history.push("/admin/sale");
+                }}
+              >
+                <ReceiptIcon />
+              </IconButton>
+            )}
+
+            <IconButton
+              style={{
+                marginRight: "1.5em",
+              }}
+              onClick={changeScreen}
+              color="inherit"
+            >
+              {isFullScreen ? (
+                <FullscreenExitIcon fontSize="large" />
+              ) : (
+                <FullscreenIcon fontSize="large" />
+              )}
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -198,4 +236,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Base);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Base));

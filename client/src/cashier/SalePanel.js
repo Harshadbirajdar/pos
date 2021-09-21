@@ -19,6 +19,7 @@ import Base from "../core/Base";
 import { connect } from "react-redux";
 import SaveIcon from "@material-ui/icons/Save";
 import { useReactToPrint } from "react-to-print";
+import PrintIcon from "@material-ui/icons/Print";
 
 import {
   AddNewCustomer,
@@ -180,7 +181,7 @@ const SalePanel = ({
     countTotalAmount();
   }, [values.product]);
   return (
-    <Base title="Sale Panel">
+    <Base title="Sale Panel" sale={true}>
       <div
         onKeyDown={(e) => {
           if (values.product.length !== 0 && e.code === "F2") {
@@ -421,22 +422,32 @@ const SalePanel = ({
                 </TableBody>
               </Table>
             </TableContainer>
+            <Grid>
+              <Button
+                variant="contained"
+                color="primary"
+                //   size="small"
+                onClick={(e) => {
+                  e.preventDefault();
 
-            <Button
-              variant="contained"
-              color="primary"
-              //   size="small"
-              onClick={(e) => {
-                e.preventDefault();
-
-                genrateBill(values, setValues, nameRef);
-              }}
-              disabled={values.product.length === 0}
-              className={classes.button}
-              startIcon={<SaveIcon />}
-            >
-              Save
-            </Button>
+                  genrateBill(values, setValues, nameRef);
+                }}
+                disabled={values.product.length === 0}
+                className={classes.button}
+                startIcon={<SaveIcon />}
+              >
+                Save
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<PrintIcon />}
+                onClick={handlePrint}
+                disabled={Bill.bill.product.length === 0}
+              >
+                Print
+              </Button>
+            </Grid>
           </Paper>
           {/* <Grid container>
           <Grid></Grid>

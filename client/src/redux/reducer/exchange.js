@@ -1,4 +1,7 @@
 import {
+  EXCHANGE_BILL_FAILED,
+  EXCHANGE_BILL_START,
+  EXCHANGE_BILL_SUCCESS,
   GET_BILL_BY_BARCODE_FAILED,
   GET_BILL_BY_BARCODE_STRAT,
   GET_BILL_BY_BARCODE_SUCCESS,
@@ -9,6 +12,13 @@ const initalState = {
     loading: false,
     error: false,
     bill: {},
+  },
+  exchangeBill: {
+    loading: false,
+    error: false,
+    bill: {
+      product: [],
+    },
   },
 };
 
@@ -29,6 +39,23 @@ const exchange = (state = initalState, action) => {
         bill: { loading: false, bill: action.payload, error: false },
       };
 
+    case EXCHANGE_BILL_START:
+      return {
+        ...state,
+        exchangeBill: { loading: true, error: false, bill: {} },
+      };
+
+    case EXCHANGE_BILL_SUCCESS:
+      return {
+        ...state,
+        exchangeBill: { loading: false, error: false, bill: action.payload },
+      };
+
+    case EXCHANGE_BILL_FAILED:
+      return {
+        ...state,
+        exchangeBill: { loading: false, error: action.payload, bill: {} },
+      };
     default:
       return state;
   }

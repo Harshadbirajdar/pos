@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import BillPrint from "../components/BillPrint";
+import { useReactToPrint } from "react-to-print";
+
 import Base from "../core/Base";
 import {
   Container,
@@ -14,13 +17,43 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  Fab,
   DialogTitle,
 } from "@material-ui/core";
-import { getBillByBarcode } from "../redux/action/exchange";
+import { exchangeBill, getBillByBarcode } from "../redux/action/exchange";
 import { connect } from "react-redux";
 import { productState } from "../redux/action/menu";
-const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
-  const [id, setId] = useState("60d1e577ede19e33b4db5075");
+import { Autocomplete } from "@material-ui/lab";
+import SaveIcon from "@material-ui/icons/Save";
+
+const ExchangePanel = ({
+  fetchBillByBarcode,
+  Bill,
+  genrateBill,
+  ExchangeBill,
+}) => {
+  const componentRef = useRef();
+  const [page, setPage] = useState(`@page { size:79mm 200px;margin:0}`);
+  // const pageStyle = page;
+  useEffect(() => {
+    setPage(
+      `@page { size:79mm ${componentRef.current?.clientHeight + 25}px;margin:0}`
+    );
+  }, [ExchangeBill.bill.product.length]);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    pageStyle: page,
+    onAfterPrint: () => {
+      // setDialog(false);
+      // clearCustomer();
+    },
+    onBeforeGetContent: (a) => {
+      console.log(a);
+    },
+  });
+
+  // print ended
+  const [id, setId] = useState("60e567af3c969927fc31e199");
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [dialogProduct, setDialogProduct] = useState([]);
@@ -75,14 +108,10 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
               <TableCell>Qty</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Amount</TableCell>
+              <TableCell>Action</TableCell>
             </TableHead>
             {dialogProduct.map((product, index) => (
-              <TableRow
-                key={index}
-                onClick={() => {
-                  console.log(product);
-                }}
-              >
+              <TableRow key={index}>
                 <TableCell>
                   {" "}
                   <TextField
@@ -102,6 +131,13 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
                 <TableCell>{product.qty}</TableCell>
                 <TableCell>{product.price}</TableCell>
                 <TableCell>{product.amount}</TableCell>
+                <TableCell
+                  onClick={() => {
+                    console.log(product);
+                  }}
+                >
+                  *
+                </TableCell>
               </TableRow>
             ))}
           </Table>
@@ -122,13 +158,15 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
       });
 
       if (index !== -1) {
+        console.log(product[index]);
         if (product[index].qty > 1 && !product[index].isQtyOne) {
           exchangeProduct = { ...product[index] };
           let filterProduct = product.filter(
             (element) => element.barcode === serachBarcode
           );
 
-          if (filterProduct === 1) {
+          if (filterProduct.length === 1) {
+            console.log(filterProduct);
             product[index].amount -= product[index].price;
             product[index].commission =
               product[index].commission -
@@ -149,11 +187,13 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
           let filterProduct = product.filter(
             (element) => element.barcode === serachBarcode
           );
+          setDialog(true);
+          setDialogProduct(filterProduct);
 
           if (filterProduct.length === 1) {
             let deletedProduct = product.splice(index, 1);
             addProductInArray(deletedProduct[0]);
-            // setBill({ ...bill, product });
+            setBill({ ...bill, product });
           }
         }
 
@@ -164,7 +204,7 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
     }
   };
   return (
-    <Base title="Exchange">
+    <Base title="Exchange" exchange={true}>
       {CustomeDialog()}
       <Container>
         <Paper>
@@ -211,7 +251,7 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
           </Grid>
 
           <Grid container spacing={2}>
-            <Grid item>
+            <Grid item md={2}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -227,6 +267,45 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
                 fullWidth
                 type="number"
                 label="Barcode"
+              />
+            </Grid>
+            <Grid item style={{ marginTop: "1em" }}>
+              <Autocomplete
+                id="combo-box-demo"
+                // options={BarcodeName.product}
+                // getOptionLabel={(option) => option.name}
+                style={{ width: 300 }}
+                // value={CategoryBarcode.product}
+                // onChange={(e, value) => {
+                //   getCategoryBarcode(
+                //     value.barcode,
+                //     qtyRef,
+                //     prodcut,
+                //     setProduct,
+                //     setOpen
+                //   );
+                // }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" variant="outlined" />
+                )}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                type="number"
+                label="Qty"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                type="number"
+                label="Price"
               />
             </Grid>
           </Grid>
@@ -304,17 +383,37 @@ const ExchangePanel = ({ fetchBillByBarcode, Bill }) => {
             </TableBody>
           </Table>
         </Paper>
+        <Fab
+          variant="extended"
+          color="primary"
+          style={{ position: "absolute", bottom: "1.5em", right: "1.5em" }}
+          onClick={(e) => {
+            e.preventDefault();
+            genrateBill(values, setValues, setBill);
+          }}
+        >
+          <SaveIcon />
+          Save
+        </Fab>
+        {ExchangeBill.bill.product.length !== 0 && (
+          <BillPrint bill={ExchangeBill.bill} ref={componentRef} />
+        )}
+        <button onClick={handlePrint}></button>
       </Container>
     </Base>
   );
 };
 const mapStateToProps = (state) => ({
   Bill: state.exchange.bill,
+  ExchangeBill: state.exchange.exchangeBill,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchBillByBarcode: (id, setId, setOpen, setBill) => {
     dispatch(getBillByBarcode(id, setId, setOpen, setBill));
+  },
+  genrateBill: (values, setValues, setBill) => {
+    dispatch(exchangeBill(values, setValues, setBill));
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ExchangePanel);
