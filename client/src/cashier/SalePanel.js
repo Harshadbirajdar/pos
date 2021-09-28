@@ -110,11 +110,6 @@ const SalePanel = ({
 
     setOpen(false);
   };
-
-  // document.addEventListener("keydown", (event) => {
-  //   console.log(event.code);
-  //   // alert(`Key pressed  \r\n Key code value: ${event.code}`);
-  // });
   const errorMsg = () => {
     return (
       <Snackbar
@@ -440,7 +435,7 @@ const SalePanel = ({
                 onClick={(e) => {
                   e.preventDefault();
 
-                  genrateBill(values, setValues, nameRef);
+                  genrateBill(values, setValues, numberRef);
                 }}
                 disabled={values.product.length === 0}
                 className={classes.button}
