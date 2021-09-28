@@ -58,7 +58,7 @@ const SalePanel = ({
   // const pageStyle = page;
   useEffect(() => {
     setPage(
-      `@page { size:79mm ${componentRef.current?.clientHeight + 25}px;margin:0}`
+      `@page { size:79mm ${560 + Bill?.bill?.product?.length * 41}px;margin:0}`
     );
   }, [Bill.bill.product.length]);
   const handlePrint = useReactToPrint({
@@ -217,6 +217,14 @@ const SalePanel = ({
                     }}
                     onKeyDown={(e) => {
                       if (e.code === "Enter" || e.code === "NumpadEnter") {
+                        if (
+                          e.target.value === "" ||
+                          e.target.value.length !== 10
+                        ) {
+                          setError("Please enter the Valid Phone Number");
+                          setOpen(true);
+                          return;
+                        }
                         getCustomer(values, setValues, salesmanRef, nameRef);
                       }
                     }}
@@ -333,13 +341,15 @@ const SalePanel = ({
                     style={{ width: 300 }}
                     value={CategoryBarcode.product}
                     onChange={(e, value) => {
-                      getCategoryBarcode(
-                        value.barcode,
-                        qtyRef,
-                        prodcut,
-                        setProduct,
-                        setOpen
-                      );
+                      if (value?.barcode) {
+                        getCategoryBarcode(
+                          value.barcode,
+                          qtyRef,
+                          prodcut,
+                          setProduct,
+                          setOpen
+                        );
+                      }
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -454,7 +464,9 @@ const SalePanel = ({
         </Grid> */}
 
           {Bill.bill.product.length !== 0 && (
-            <BillPrint bill={Bill.bill} ref={componentRef} />
+            <div style={{ display: "none" }}>
+              <BillPrint bill={Bill.bill} ref={componentRef} />
+            </div>
           )}
           <button onClick={handlePrint}></button>
         </Container>
