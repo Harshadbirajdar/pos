@@ -35,11 +35,11 @@ const ExchangePanel = ({
   const componentRef = useRef();
   const [page, setPage] = useState(`@page { size:79mm 200px;margin:0}`);
   // const pageStyle = page;
-  useEffect(() => {
-    setPage(
-      `@page { size:79mm ${componentRef.current?.clientHeight + 25}px;margin:0}`
-    );
-  }, [ExchangeBill.bill.product.length]);
+  // useEffect(() => {
+  //   setPage(
+  //     `@page { size:79mm ${componentRef.current?.clientHeight + 25}px;margin:0}`
+  //   );
+  // }, [ExchangeBill.bill?.product?.length]);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     pageStyle: page,
@@ -53,7 +53,7 @@ const ExchangePanel = ({
   });
 
   // print ended
-  const [id, setId] = useState("60e567af3c969927fc31e199");
+  const [id, setId] = useState("6159ce8c8cdbf540646121bd");
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [dialogProduct, setDialogProduct] = useState([]);
@@ -61,8 +61,11 @@ const ExchangePanel = ({
   const [serachBarcode, setSerachBarcode] = useState("");
   const [values, setValues] = useState({
     product: [],
+    amount: 0,
   });
-
+  useEffect(() => {
+    countTotalAmount();
+  }, [values.product]);
   const addProductInArray = (product) => {
     let MainProduct = values.product;
     let localProduct = [];
@@ -87,6 +90,7 @@ const ExchangePanel = ({
       }
     }
     setValues({ ...values, product: localProduct });
+    debugger;
   };
 
   const CustomeDialog = () => {
@@ -133,7 +137,29 @@ const ExchangePanel = ({
                 <TableCell>{product.amount}</TableCell>
                 <TableCell
                   onClick={() => {
-                    console.log(product);
+                    addProductInArray(product);
+                    let products = bill.product;
+                    let index = products.findIndex((element) => {
+                      if (
+                        element.barcode === product.barcode &&
+                        element.salesman === product.salesman
+                      ) {
+                        return element;
+                      }
+                    });
+                    if (index !== -1) {
+                      products.splice(index, 1);
+                      setBill({ ...bill, product: products });
+                    } else {
+                      let index = products.findIndex((element) => {
+                        if (element.barcode === products.barcode) {
+                          return element;
+                        }
+                      });
+                      products.splice(index, 1);
+                      setBill({ ...bill, product: products });
+                    }
+                    setDialog(false);
                   }}
                 >
                   *
@@ -146,10 +172,16 @@ const ExchangePanel = ({
       </Dialog>
     );
   };
-
+  const countTotalAmount = () => {
+    setValues({
+      ...values,
+      amount: values.product.reduce((a, b) => a + b.amount, 0),
+    });
+  };
   const onEnterSerchBarcode = (e) => {
     if (e.code === "Enter" || e.code === "NumpadEnter") {
       let product = bill.product;
+
       let exchangeProduct = {};
       let index = product.findIndex((element) => {
         if (element.barcode === serachBarcode) {
@@ -187,13 +219,13 @@ const ExchangePanel = ({
           let filterProduct = product.filter(
             (element) => element.barcode === serachBarcode
           );
-          setDialog(true);
-          setDialogProduct(filterProduct);
-
           if (filterProduct.length === 1) {
             let deletedProduct = product.splice(index, 1);
             addProductInArray(deletedProduct[0]);
             setBill({ ...bill, product });
+          } else {
+            setDialog(true);
+            setDialogProduct(filterProduct);
           }
         }
 
@@ -396,8 +428,11 @@ const ExchangePanel = ({
           Save
         </Fab>
         {ExchangeBill.bill.product.length !== 0 && (
-          <BillPrint bill={ExchangeBill.bill} ref={componentRef} />
+          <div>
+            <BillPrint bill={ExchangeBill.bill} ref={componentRef} />
+          </div>
         )}
+        {console.log("ExchangeBill.bill", ExchangeBill.bill)}
         <button onClick={handlePrint}></button>
       </Container>
     </Base>
