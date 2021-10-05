@@ -40,3 +40,29 @@ exports.createExchangeBill = async (req, res, next) => {
     // next();
   });
 };
+
+exports.getExchaneBillByNumber = (req, res) => {
+  const { billNo, date } = req.query;
+
+  const currentDate = new Date(date).setHours(00, 00, 00);
+
+  Exchange.findOne({
+    billNo,
+    createdAt: {
+      $gte: currentDate,
+      $lte: new Date(currentDate).setHours(23, 59, 59),
+    },
+  }).exec((err, bill) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Something went wrong...",
+      });
+    }
+    if (!bill) {
+      return res.status(403).json({
+        error: "Bill Not Found...",
+      });
+    }
+    return res.json(bill);
+  });
+};
