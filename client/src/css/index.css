@@ -16,3 +16,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: #556cd6;
 }
+
+html * {
+  font-family: "Nunito", sans-serif !important;
+}
