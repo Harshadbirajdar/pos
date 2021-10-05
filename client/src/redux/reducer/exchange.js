@@ -42,7 +42,7 @@ const exchange = (state = initalState, action) => {
     case EXCHANGE_BILL_START:
       return {
         ...state,
-        exchangeBill: { loading: true, error: false, bill: {} },
+        exchangeBill: { loading: true, error: false, bill: { product: [] } },
       };
 
     case EXCHANGE_BILL_SUCCESS:
