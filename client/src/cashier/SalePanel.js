@@ -182,7 +182,7 @@ const SalePanel = ({
           if (values.product.length !== 0 && e.code === "F2") {
             e.preventDefault();
 
-            genrateBill(values, setValues, numberRef);
+            genrateBill(values, setValues, numberRef, handlePrint);
           }
         }}
       >
@@ -397,7 +397,7 @@ const SalePanel = ({
                 </Grid>
               </Grid>
             </form>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} style={{ height: "46vh" }}>
               <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                   <TableRow>
@@ -435,7 +435,7 @@ const SalePanel = ({
                 onClick={(e) => {
                   e.preventDefault();
 
-                  genrateBill(values, setValues, numberRef);
+                  genrateBill(values, setValues, numberRef, handlePrint);
                 }}
                 disabled={values.product.length === 0}
                 className={classes.button}
@@ -459,11 +459,10 @@ const SalePanel = ({
         </Grid> */}
 
           {Bill.bill.product.length !== 0 && (
-            <div style={{ display: "none" }}>
+            <div style={{ display: "block" }}>
               <BillPrint bill={Bill.bill} ref={componentRef} />
             </div>
           )}
-          <button onClick={handlePrint}></button>
         </Container>
       </div>
       {/* {console.log(Bill.bill.product.length)} */}
@@ -504,8 +503,8 @@ const mapDispatchToProps = (dispatch) => ({
   addCustomer: (values, setValues, salesmanRef) => {
     dispatch(AddNewCustomer(values, setValues, salesmanRef));
   },
-  genrateBill: (values, setValues, numberRef) => {
-    dispatch(genrateBill(values, setValues, numberRef));
+  genrateBill: (values, setValues, numberRef, handlePrint) => {
+    dispatch(genrateBill(values, setValues, numberRef, handlePrint));
   },
   getCategoryBarcode: (barcode, qtyRef, prodcut, setProduct, setOpen) => {
     dispatch(getCategoryBarcode(barcode, qtyRef, prodcut, setProduct, setOpen));

@@ -211,7 +211,7 @@ const genrateBillFailed = (error) => ({
   payload: error,
 });
 
-export const genrateBill = (values, setValues, numberRef) => {
+export const genrateBill = (values, setValues, numberRef, handlePrint) => {
   const { user, token } = isAuthenticated();
   return (dispatch) => {
     dispatch(genrateBillStart());
@@ -227,6 +227,7 @@ export const genrateBill = (values, setValues, numberRef) => {
         });
         dispatch(genrateBillSuccess(response.data));
         numberRef.current.focus();
+        // handlePrint();
       })
       .catch((err) => {
         dispatch(genrateBillFailed(err.response.data.error));
