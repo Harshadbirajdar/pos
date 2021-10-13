@@ -29,6 +29,8 @@ import {
   getProductByBarcode,
   getCategoryBarcodeName,
   getCategoryBarcodeClear,
+  getExchangeBillById,
+  genrateBillClear,
 } from "../redux/action/sale";
 import BillPrint from "../components/BillPrint";
 
@@ -52,6 +54,9 @@ const SalePanel = ({
   barcodeName,
   BarcodeName,
   clearBarcode,
+  getExchangeBillById,
+  Exchange,
+  clearBill,
 }) => {
   const componentRef = useRef();
   const [page, setPage] = useState(`@page { size:79mm 200px;margin:0}`);
@@ -65,8 +70,7 @@ const SalePanel = ({
     content: () => componentRef.current,
     pageStyle: page,
     onAfterPrint: () => {
-      // setDialog(false);
-      // clearCustomer();
+      // clearBill();
     },
     onBeforeGetContent: (a) => {
       console.log(a);
@@ -87,6 +91,7 @@ const SalePanel = ({
     amount: 0,
   });
   const [error, setError] = useState(false);
+  const [exchangeId, setExchangeId] = useState("");
   const [prodcut, setProduct] = useState({
     salesman: "",
     barcode: "",
@@ -101,6 +106,7 @@ const SalePanel = ({
   const qtyRef = useRef();
   const priceRef = useRef();
   const numberRef = useRef();
+  const exchangeRef = useRef();
   const [open, setOpen] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -165,7 +171,6 @@ const SalePanel = ({
       Product.push(product);
       setValues({ ...values, product: Product });
       // salesmanRef.current.focus();
-      console.log(salesmanRef.current.focus());
       countTotalAmount();
       setProduct({ salesman: "", barcode: "", price: "", qty: "" });
       clearBarcode();
@@ -211,6 +216,10 @@ const SalePanel = ({
                       });
                     }}
                     onKeyDown={(e) => {
+                      if (e.code === "Tab") {
+                        exchangeRef.current.focus();
+                        return;
+                      }
                       if (e.code === "Enter" || e.code === "NumpadEnter") {
                         if (
                           e.target.value === "" ||
@@ -254,6 +263,24 @@ const SalePanel = ({
                     }}
                   />
                 </Grid>
+                <Grid item>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    inputRef={exchangeRef}
+                    value={exchangeId}
+                    onChange={(e) => {
+                      setExchangeId(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.code === "Enter" || e.code === "NumpadEnter") {
+                        getExchangeBillById(exchangeId, setError, setOpen);
+                      }
+                    }}
+                    label="Exchange Bill Number"
+                  ></TextField>
+                </Grid>
                 <Grid style={{ marginLeft: "auto" }}>
                   <div
                     style={{
@@ -282,7 +309,12 @@ const SalePanel = ({
                     value={prodcut.salesman}
                     onKeyDown={(e) => {
                       if (e.code === "Enter" || e.code === "NumpadEnter") {
-                        inputRef.current.focus();
+                        if (e.target.value !== "") {
+                          inputRef.current.focus();
+                        } else {
+                          setError("Please Enter the salesman Number");
+                          setOpen(true);
+                        }
                       }
                       // console.log();
                     }}
@@ -444,6 +476,7 @@ const SalePanel = ({
                 Save
               </Button>
               <Button
+                id="printBill"
                 variant="contained"
                 color="primary"
                 startIcon={<PrintIcon />}
@@ -459,7 +492,7 @@ const SalePanel = ({
         </Grid> */}
 
           {Bill.bill.product.length !== 0 && (
-            <div style={{ display: "block" }}>
+            <div style={{ display: "none" }}>
               <BillPrint bill={Bill.bill} ref={componentRef} />
             </div>
           )}
@@ -474,6 +507,7 @@ const mapStateToProps = (state) => ({
   Bill: state.sale.bill,
   CategoryBarcode: state.sale.categoryBarcode,
   BarcodeName: state.sale.barcodeName,
+  Exchange: state.sale.exchangeBill,
 });
 const mapDispatchToProps = (dispatch) => ({
   getProductByBarcode: (
@@ -514,6 +548,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
   clearBarcode: () => {
     dispatch(getCategoryBarcodeClear());
+  },
+  getExchangeBillById: (id, setError, setOpen) => {
+    dispatch(getExchangeBillById(id, setError, setOpen));
+  },
+  clearBill: () => {
+    dispatch(genrateBillClear());
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(SalePanel);

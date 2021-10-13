@@ -54,7 +54,10 @@ const billSchema = new mongoose.Schema({
       },
     },
   ],
-
+  exchange: {
+    type: ObjectId,
+    ref: "Exchange",
+  },
   createdAt: {
     type: Date,
   },

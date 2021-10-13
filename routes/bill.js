@@ -2,7 +2,7 @@ const express = require("express");
 const {
   createBill,
   getAllBill,
-  getDayReportSummery,
+  getDayBillReportSummery,
   getBillByBarcode,
   getWeeklyChartData,
 } = require("../controllers/bill");
@@ -38,8 +38,8 @@ router.get(
   isSaleSupervisor,
   getAllBill
 );
-
-router.get("/test/print", getDayReportSummery);
+// TODO: come here
+router.get("/test/print", getDayBillReportSummery);
 
 router.get(
   "/:userId/bill/barcode",

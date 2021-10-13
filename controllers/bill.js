@@ -72,7 +72,7 @@ exports.getAllBill = async (req, res) => {
     });
 };
 
-exports.getDayReportSummery = (req, res) => {
+exports.getDayBillReportSummery = (req, res) => {
   const startDate = new Date(
     new Date(req.query.startDate).setHours(00, 00, 00)
   );
@@ -87,6 +87,11 @@ exports.getDayReportSummery = (req, res) => {
       let toatal = report.reduce((a, c) => {
         return a + c.amount;
       }, 0);
+      if (report.length === 0) {
+        return res.status(403).json({
+          error: "Bills not found",
+        });
+      }
       let startBillNumber = report[0].billNo;
       let endBillNumber = report[report.length - 1].billNo;
       return res.json({ toatal, startBillNumber, endBillNumber });

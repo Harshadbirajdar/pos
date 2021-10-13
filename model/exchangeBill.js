@@ -53,7 +53,10 @@ const exchangeSchema = new mongoose.Schema({
       },
     },
   ],
-
+  isUsed: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
   },
