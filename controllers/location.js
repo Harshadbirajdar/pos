@@ -27,3 +27,20 @@ exports.createNewLocation = (req, res) => {
     return res.json(location);
   });
 };
+
+// Get All Location
+exports.getAllLocation = (req, res) => {
+  Location.find((err, locations) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Something went wrong",
+      });
+    }
+    if (locations.length === 0) {
+      return res.status(400).json({
+        error: "No Location was found",
+      });
+    }
+    return res.json(locations);
+  });
+};

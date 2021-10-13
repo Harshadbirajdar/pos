@@ -53,3 +53,14 @@ export const authenticated = (data, next) => {
     next();
   }
 };
+
+export const fetchAllLocation = () => {
+  return axios
+    .get(`${API}/location`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((err) => {
+      return err.response.data;
+    });
+};

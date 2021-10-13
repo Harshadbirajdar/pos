@@ -6,7 +6,10 @@ const {
   isAuthinticated,
   isAdmin,
 } = require("../controllers/auth");
-const { createNewLocation } = require("../controllers/location");
+const {
+  createNewLocation,
+  getAllLocation,
+} = require("../controllers/location");
 const { getUserById } = require("../controllers/user");
 const router = express.Router();
 
@@ -25,5 +28,7 @@ router.post(
   isAdmin,
   createNewLocation
 );
+
+router.get("/location", getAllLocation);
 
 module.exports = router;
