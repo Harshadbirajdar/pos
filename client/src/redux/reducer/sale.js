@@ -18,6 +18,10 @@ import {
   GET_CATEGORY_BARCODE_NAME_SUCCESS,
   GET_CATEGORY_BARCODE_NAME_FAILED,
   GET_CATEGORY_BARCODE_CLEAR,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_START,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_SUCCESS,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_FAILED,
+  GENRATE_BILL_CLEAR,
 } from "../action/action.type";
 
 const initalState = {
@@ -47,6 +51,11 @@ const initalState = {
     loading: true,
     error: false,
     product: [],
+  },
+  exchangeBill: {
+    loading: false,
+    error: false,
+    bill: {},
   },
 };
 
@@ -176,6 +185,46 @@ const sale = (state = initalState, action) => {
         barcodeName: { loading: false, error: action.payload, product: [] },
       };
 
+    case GET_EXCHANGE_BILL_BY_ID_FOR_SALE_START:
+      return {
+        ...state,
+        exchangeBill: {
+          loading: true,
+          error: false,
+          bill: {},
+        },
+      };
+
+    case GET_EXCHANGE_BILL_BY_ID_FOR_SALE_SUCCESS:
+      return {
+        ...state,
+        exchangeBill: {
+          loading: false,
+          error: false,
+          bill: action.payload,
+        },
+      };
+    case GET_EXCHANGE_BILL_BY_ID_FOR_SALE_FAILED:
+      return {
+        ...state,
+        exchangeBill: {
+          loading: false,
+          error: action.payload,
+          bill: {},
+        },
+      };
+
+    case GENRATE_BILL_CLEAR:
+      return {
+        ...state,
+        bill: {
+          loading: false,
+          error: false,
+          bill: {
+            product: [],
+          },
+        },
+      };
     default:
       return state;
   }

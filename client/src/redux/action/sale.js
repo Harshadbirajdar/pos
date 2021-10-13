@@ -22,6 +22,10 @@ import {
   GET_CATEGORY_BARCODE_NAME_SUCCESS,
   GET_CATEGORY_BARCODE_NAME_FAILED,
   GET_CATEGORY_BARCODE_CLEAR,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_START,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_SUCCESS,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_FAILED,
+  GENRATE_BILL_CLEAR,
 } from "./action.type";
 
 const getProdcutByBarcodeStart = () => ({
@@ -227,7 +231,10 @@ export const genrateBill = (values, setValues, numberRef, handlePrint) => {
         });
         dispatch(genrateBillSuccess(response.data));
         numberRef.current.focus();
-        // handlePrint();
+        document.getElementById("printBill").click();
+        // setTimeout(() => {
+        //   handlePrint();
+        // }, 1000);
       })
       .catch((err) => {
         dispatch(genrateBillFailed(err.response.data.error));
@@ -315,3 +322,41 @@ export const getCategoryBarcodeName = () => {
       });
   };
 };
+
+const getExchangeBillByIdStart = () => ({
+  type: GET_EXCHANGE_BILL_BY_ID_FOR_SALE_START,
+});
+const getExchangeBillByIdSuccess = (bill) => ({
+  type: GET_EXCHANGE_BILL_BY_ID_FOR_SALE_SUCCESS,
+  payload: bill,
+});
+const getExchangeBillByIdFailed = (error) => ({
+  type: GET_EXCHANGE_BILL_BY_ID_FOR_SALE_FAILED,
+  payload: error,
+});
+
+export const getExchangeBillById = (id, setError, setOpen) => {
+  const { user, token } = isAuthenticated();
+  return (dispatch) => {
+    dispatch(getExchangeBillByIdStart());
+
+    axios
+      .get(`${API}/${user._id}/exchange?billNo=${id}&date=2021/10/07`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        dispatch(getExchangeBillByIdSuccess(response.data));
+      })
+      .catch((err) => {
+        setOpen(true);
+        setError(err.response.data.error);
+        dispatch(getExchangeBillByIdFailed(err.response.data.error));
+      });
+  };
+};
+
+export const genrateBillClear = () => ({
+  type: GENRATE_BILL_CLEAR,
+});
