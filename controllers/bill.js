@@ -3,7 +3,12 @@ const Salesman = require("../model/salesman");
 const Product = require("../model/product");
 
 exports.createBill = async (req, res, next) => {
-  let bill = new Bill(req.body);
+  let bill;
+  if (req.body?.customer?._id) {
+    bill = new Bill(req.body);
+  } else {
+    bill = new Bill({ ...req.body, customer: null });
+  }
 
   let salesman = [];
   let stockUpdate = [];
@@ -31,7 +36,7 @@ exports.createBill = async (req, res, next) => {
   bill.save((err, bill) => {
     if (err) {
       return res.status(400).json({
-        error: "Something went wrong",
+        error: err,
       });
     }
     req.bill = bill;
