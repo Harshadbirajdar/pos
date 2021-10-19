@@ -65,7 +65,9 @@ const Signin = ({ history }) => {
         });
       } else {
         setValues({ ...values, loading: false, error: false, success: true });
-        localStorage.setItem("location", JSON.stringify(locationValue));
+        if (locationValue !== "") {
+          localStorage.setItem("location", JSON.stringify(locationValue));
+        }
         authenticated(data, () => {
           history.push("/");
         });

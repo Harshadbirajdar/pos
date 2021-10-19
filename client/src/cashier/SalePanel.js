@@ -89,7 +89,7 @@ const SalePanel = ({
     //   phoneNumber: "",
     // },
     amount: 0,
-    // location: localStorage.getItem("location"),
+    location: JSON.parse(localStorage.getItem("location")),
   });
   const [error, setError] = useState(false);
   const [exchangeId, setExchangeId] = useState("");
