@@ -1,6 +1,7 @@
 const Exchange = require("../model/exchangeBill");
 const Salesman = require("../model/salesman");
 const Product = require("../model/product");
+const Bill = require("../model/bill");
 
 exports.createExchangeBill = async (req, res, next) => {
   let exchangeBill = new Exchange(req.body);
@@ -65,4 +66,27 @@ exports.getExchaneBillByNumber = (req, res) => {
     }
     return res.json(bill);
   });
+};
+
+exports.getBillByBarocde = (req, res) => {
+  const { barcode } = req.query;
+  Bill.findOne({
+    product: {
+      $elemMatch: { barcode, isReturn: false },
+    },
+  })
+    .populate("customer")
+    .exec((err, bill) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Something went wrong...",
+        });
+      }
+      if (!bill) {
+        return res.status(403).json({
+          error: "No Bill was found",
+        });
+      }
+      return res.json(bill);
+    });
 };

@@ -122,13 +122,13 @@ const BillPrint = React.forwardRef((props, ref) => {
       </div>
       <Table className="bill-print">
         <TableHead>
-          <TableCell
-            style={{ fontWeight: 700, textAlign: "left", paddingLeft: "0.9em" }}
-          >
+          <TableCell style={{ fontWeight: 700, width: 0 }}>SN</TableCell>
+          <TableCell style={{ fontWeight: 700, textAlign: "center" }}>
             Item
             <br />
-            HSN
+            Code
           </TableCell>
+          <TableCell style={{ fontWeight: 700 }}>Hsn</TableCell>
           <TableCell style={{ fontWeight: 700 }}>Qty</TableCell>
           <TableCell style={{ fontWeight: 700 }}>Rate</TableCell>
           <TableCell style={{ fontWeight: 700 }}>GST</TableCell>
@@ -137,24 +137,31 @@ const BillPrint = React.forwardRef((props, ref) => {
         <TableBody>
           {Object.keys(bill).length !== 0 &&
             bill.product.map((product, index) => (
-              <TableRow key={index}>
-                <TableCell style={{ textAlign: "left", paddingLeft: "0.9em" }}>
-                  {product.name}
-                  <br /> {product.hsn}{" "}
-                </TableCell>
-                <TableCell>{product.qty}</TableCell>
-                <TableCell>{product.price}</TableCell>
-                <TableCell>{product.gst}%</TableCell>
-                <TableCell>{product.amount}</TableCell>
-              </TableRow>
+              <>
+                <TableRow key={index}>
+                  <TableCell>{product.salesman}</TableCell>
+
+                  <TableCell
+                    style={{ textAlign: "center", paddingLeft: "0.9em" }}
+                  >
+                    {product.name}
+                    <br /> {product.barcode}{" "}
+                  </TableCell>
+                  <TableCell>{product.hsn}</TableCell>
+                  <TableCell>{product.qty}</TableCell>
+                  <TableCell>{product.price}</TableCell>
+                  <TableCell>{product.gst}%</TableCell>
+                  <TableCell>{product.amount}</TableCell>
+                </TableRow>
+              </>
             ))}
           <TableRow>
-            <TableCell style={{ fontSize: "1.1em" }}>
+            <TableCell style={{ fontSize: "1em" }}>
               Qty :<strong>{qty}</strong>
             </TableCell>
             <TableCell
               style={{ padding: "1em", textAlign: "right", fontSize: "1em" }}
-              colSpan={4}
+              colSpan={6}
             >
               Total Amount :<strong>{bill.amount.toFixed(2)}</strong>
             </TableCell>
@@ -166,7 +173,7 @@ const BillPrint = React.forwardRef((props, ref) => {
                 fontSize: "1.2em",
                 paddingRight: "1em",
               }}
-              colSpan={5}
+              colSpan={7}
             >
               <span style={{ textAlign: "right", fontSize: "0.8em" }}>
                 Round Off {(-bill.amount + parseInt(bill.amount)).toFixed(2)}

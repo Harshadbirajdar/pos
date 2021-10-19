@@ -34,7 +34,11 @@ const billSchema = new mongoose.Schema({
         type: Number,
       },
       barcode: {
-        type: Number,
+        type: String,
+      },
+      isReturn: {
+        type: Boolean,
+        default: false,
       },
       amount: {
         type: Number,

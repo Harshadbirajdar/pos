@@ -70,7 +70,7 @@ const SalePanel = ({
     content: () => componentRef.current,
     pageStyle: page,
     onAfterPrint: () => {
-      // clearBill();
+      clearBill();
     },
     onBeforeGetContent: (a) => {
       console.log(a);
@@ -89,6 +89,7 @@ const SalePanel = ({
     //   phoneNumber: "",
     // },
     amount: 0,
+    // location: localStorage.getItem("location"),
   });
   const [error, setError] = useState(false);
   const [exchangeId, setExchangeId] = useState("");
@@ -226,6 +227,7 @@ const SalePanel = ({
                           e.target.value.length !== 10
                         ) {
                           setError("Please enter the Valid Phone Number");
+                          setValues({ ...values, customer: {} });
                           setOpen(true);
                           return;
                         }
@@ -329,13 +331,13 @@ const SalePanel = ({
                     required
                     fullWidth
                     label="Barcode"
-                    type="Number"
+                    // type="Number"
                     value={prodcut.barcode}
                     inputRef={inputRef}
                     onChange={onhandleChange("barcode")}
                     onKeyDown={(e) => {
                       if (e.code === "NumpadEnter" || e.code === "Enter") {
-                        if (prodcut.barcode > 150) {
+                        if (Number(prodcut.barcode.split("/")[0]) > 150) {
                           getProductByBarcode(
                             prodcut.barcode,
                             values,

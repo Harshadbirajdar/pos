@@ -4,6 +4,7 @@ const { isSignIn, isAuthinticated, isCashier } = require("../controllers/auth");
 const {
   createExchangeBill,
   getExchaneBillByNumber,
+  getBillByBarocde,
 } = require("../controllers/exchange");
 const { getUserById } = require("../controllers/user");
 router.param("userId", getUserById);
@@ -23,4 +24,11 @@ router.get(
   getExchaneBillByNumber
 );
 
+router.get(
+  "/:userId/exchange/bill/barcode",
+  isSignIn,
+  isAuthinticated,
+  isCashier,
+  getBillByBarocde
+);
 module.exports = router;

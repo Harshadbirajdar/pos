@@ -46,14 +46,17 @@ exports.purchaseEntry = (req, res) => {
 // get product by barcode
 
 exports.getProductByBarcode = (req, res) => {
-  let barcode = req.query.barcode;
+  let queryBarcode = req.query.barcode;
+
+  let barcode = queryBarcode.split("/")[0];
 
   Product.findOne({ barcode })
     .populate("category")
     .exec((err, prodcut) => {
       if (err) {
+        console.log(err);
         return res.status(400).json({
-          error: "Something went wrong",
+          error: err,
         });
       }
       if (!prodcut) {

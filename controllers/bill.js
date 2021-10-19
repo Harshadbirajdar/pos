@@ -132,8 +132,6 @@ exports.getWeeklyChartData = (req, res) => {
 
   let startWeek = new Date(year, month, date - currentDate.getDay());
   let endWeek = new Date(year, month, date - currentDate.getDay() + 7);
-  console.log(startWeek);
-
   Bill.find({ createdAt: { $gte: startWeek, $lte: endWeek } })
     .select("amount createdAt")
     .exec((err, bills) => {

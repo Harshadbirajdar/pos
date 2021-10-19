@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import BillPrint from "../components/BillPrint";
 import { useReactToPrint } from "react-to-print";
-
+import moment from "moment";
 import Base from "../core/Base";
 import {
   Container,
@@ -20,7 +20,11 @@ import {
   Fab,
   DialogTitle,
 } from "@material-ui/core";
-import { exchangeBill, getBillByBarcode } from "../redux/action/exchange";
+import {
+  exchangeBill,
+  getBillByBarcode,
+  getBillByProductBarcode,
+} from "../redux/action/exchange";
 import { connect } from "react-redux";
 import { productState } from "../redux/action/menu";
 import { Autocomplete } from "@material-ui/lab";
@@ -31,6 +35,7 @@ const ExchangePanel = ({
   Bill,
   genrateBill,
   ExchangeBill,
+  fetchBillByProductBarcode,
 }) => {
   const componentRef = useRef();
   const [page, setPage] = useState(`@page { size:79mm 200px;margin:0}`);
@@ -53,11 +58,12 @@ const ExchangePanel = ({
   });
 
   // print ended
-  const [id, setId] = useState("6159ce8c8cdbf540646121bd");
+  const [id, setId] = useState("");
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [dialogProduct, setDialogProduct] = useState([]);
   const [bill, setBill] = useState("");
+  const [barcode, setBarcode] = useState("");
   const [serachBarcode, setSerachBarcode] = useState("");
   const [values, setValues] = useState({
     product: [],
@@ -190,7 +196,6 @@ const ExchangePanel = ({
       });
 
       if (index !== -1) {
-        console.log(product[index]);
         if (product[index].qty > 1 && !product[index].isQtyOne) {
           exchangeProduct = { ...product[index] };
           let filterProduct = product.filter(
@@ -264,25 +269,27 @@ const ExchangePanel = ({
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
+                value={barcode}
+                onChange={(e) => {
+                  setBarcode(e.target.value);
                 }}
-                label="Bill Date"
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                type="number"
-                label="Bill Number"
+                onKeyDown={(e) => {
+                  if (e.code === "Enter" || e.code === "NumpadEnter") {
+                    fetchBillByProductBarcode(
+                      barcode,
+                      setBarcode,
+                      setBill,
+                      setOpen
+                    );
+                  }
+                }}
+                type="text"
+                label="Barcode Number"
               />
             </Grid>
           </Grid>
 
-          <Grid container spacing={2}>
+          {/* <Grid container spacing={2}>
             <Grid item md={2}>
               <TextField
                 variant="outlined"
@@ -340,7 +347,27 @@ const ExchangePanel = ({
                 label="Price"
               />
             </Grid>
-          </Grid>
+          </Grid> */}
+          {Object.keys(bill).length !== 0 && (
+            <Paper style={{ padding: "1em" }}>
+              <Grid container>
+                <Grid item style={{ padding: "1em" }}>
+                  <div>
+                    <strong>Bill No:</strong> {bill.billNo}
+                  </div>
+                  <div>Name: {bill.customer?.name}</div>
+                </Grid>
+                <Grid item style={{ padding: "1em" }}>
+                  <div>
+                    <strong> Bill Date:</strong>{" "}
+                    {moment(bill.createdAt).format("DD/MM/YYYY hh:mm A")}
+                  </div>
+                  <div>Phone Number: {bill.customer?.phoneNumber}</div>
+                </Grid>
+              </Grid>
+            </Paper>
+          )}
+
           {Object.keys(bill).length !== 0 && (
             <TableContainer component={Paper}>
               <Table aria-label="simple table" size="small">
@@ -353,12 +380,13 @@ const ExchangePanel = ({
                       <TextField
                         variant="outlined"
                         margin="dense"
+                        id="search-barcode"
                         value={serachBarcode}
                         onChange={(e) => {
-                          setSerachBarcode(parseInt(e.target.value));
+                          setSerachBarcode(e.target.value);
                         }}
                         onKeyDown={onEnterSerchBarcode}
-                        type="number"
+                        type="text"
                         label="Search Barcode"
                       />
                     </TableCell>
@@ -368,6 +396,7 @@ const ExchangePanel = ({
                     <TableCell>Rate</TableCell>
                     <TableCell>GST</TableCell>
                     <TableCell>Amount</TableCell>
+                    <TableCell>Return</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -381,6 +410,7 @@ const ExchangePanel = ({
                       <TableCell>{proodut.price}</TableCell>
                       <TableCell>{proodut.gst}</TableCell>
                       <TableCell>{proodut.amount}</TableCell>
+                      <TableCell>{proodut.isReturn ? "Yes" : "No"}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -389,14 +419,14 @@ const ExchangePanel = ({
           )}
           <Table>
             <TableHead>
-              <TableCell>salesman</TableCell>
-              <TableCell>barcode</TableCell>
-              <TableCell>name</TableCell>
-              <TableCell>commission</TableCell>
-              <TableCell>qty</TableCell>
-              <TableCell>price</TableCell>
-              <TableCell>gst</TableCell>
-              <TableCell>amount</TableCell>
+              <TableCell>Salesman</TableCell>
+              <TableCell>Barcode</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Commission</TableCell>
+              <TableCell>Qty</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Gst</TableCell>
+              <TableCell>Amount</TableCell>
             </TableHead>
             <TableBody>
               {values.product.length !== 0 &&
@@ -446,6 +476,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchBillByBarcode: (id, setId, setOpen, setBill) => {
     dispatch(getBillByBarcode(id, setId, setOpen, setBill));
+  },
+  fetchBillByProductBarcode: (barcode, setBarcode, setBill, setOpen) => {
+    dispatch(getBillByProductBarcode(barcode, setBarcode, setBill, setOpen));
   },
   genrateBill: (values, setValues, setBill) => {
     dispatch(exchangeBill(values, setValues, setBill));

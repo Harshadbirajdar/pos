@@ -33,7 +33,7 @@ const exchangeSchema = new mongoose.Schema({
         type: Number,
       },
       barcode: {
-        type: Number,
+        type: String,
       },
       amount: {
         type: Number,

@@ -57,7 +57,7 @@ const BarcodePrint = React.forwardRef((props, ref) => {
             </h2>
             <div className="test">
               <Barcode
-                value={products.barcode}
+                value={`${products.barcode}/${i + 1}`}
                 height="23"
                 width="1"
                 fontSize="10"
@@ -112,7 +112,7 @@ const BarcodePrint = React.forwardRef((props, ref) => {
             </h2>
             <div className="test">
               <Barcode
-                value={products.barcode}
+                value={`${products.barcode}/${i + 1}`}
                 height="23"
                 width="1"
                 fontSize="10"

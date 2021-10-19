@@ -33,6 +33,7 @@ exports.createCategoryBarcode = (req, res) => {
 
 exports.getCategoryByBarcode = (req, res) => {
   const barcode = req.query.barcode;
+  // let barcode = queryBarcode.split("/")[0].toString();
 
   CategoryBarcode.findOne({ barcode }).exec((err, category) => {
     if (err) {

@@ -5,6 +5,9 @@ import {
   GET_BILL_BY_BARCODE_FAILED,
   GET_BILL_BY_BARCODE_STRAT,
   GET_BILL_BY_BARCODE_SUCCESS,
+  GET_BILL_BY_PRODUCT_BARCODE_FAILED,
+  GET_BILL_BY_PRODUCT_BARCODE_STRAT,
+  GET_BILL_BY_PRODUCT_BARCODE_SUCCESS,
 } from "../action/action.type";
 
 const initalState = {
@@ -55,6 +58,21 @@ const exchange = (state = initalState, action) => {
       return {
         ...state,
         exchangeBill: { loading: false, error: action.payload, bill: {} },
+      };
+
+    case GET_BILL_BY_PRODUCT_BARCODE_STRAT:
+      return { ...state, bill: { loading: true, error: false, bill: {} } };
+
+    case GET_BILL_BY_PRODUCT_BARCODE_FAILED:
+      return {
+        ...state,
+        bill: { loading: false, error: action.payload, bill: {} },
+      };
+
+    case GET_BILL_BY_PRODUCT_BARCODE_SUCCESS:
+      return {
+        ...state,
+        bill: { loading: false, bill: action.payload, error: false },
       };
     default:
       return state;

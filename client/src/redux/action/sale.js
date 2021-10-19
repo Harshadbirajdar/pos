@@ -72,7 +72,7 @@ export const getProductByBarcode = (
           calculate = category.commision;
         }
         Prodcut.price = price;
-        Prodcut.barcode = barcode;
+        // Prodcut.barcode = barcode;
         Prodcut.name = category.name;
         Prodcut.commission = calculate;
         Prodcut.hsn = category.hsn;
@@ -232,9 +232,6 @@ export const genrateBill = (values, setValues, numberRef, handlePrint) => {
         dispatch(genrateBillSuccess(response.data));
         numberRef.current.focus();
         document.getElementById("printBill").click();
-        // setTimeout(() => {
-        //   handlePrint();
-        // }, 1000);
       })
       .catch((err) => {
         dispatch(genrateBillFailed(err.response.data.error));
