@@ -26,14 +26,12 @@ export const isAuthenticated = () => {
   if (typeof window == "undefined") {
     return false;
   }
-
-  // if (localStorage.getItem("jwt")) {
-  //   return JSON.parse(localStorage.getItem("jwt"));
-  // } else {
-  //   return false;
-  // }
-  if (sessionStorage.getItem("jwt")) {
-    return JSON.parse(sessionStorage.getItem("jwt"));
+  if (localStorage.getItem("location")) {
+    if (sessionStorage.getItem("jwt")) {
+      return JSON.parse(sessionStorage.getItem("jwt"));
+    } else {
+      return false;
+    }
   } else {
     return false;
   }

@@ -135,6 +135,7 @@ const Base = ({
               marginLeft: "auto",
             }}
           >
+            <span>{JSON.parse(localStorage.getItem("location"))?.name}</span>
             {sale && (
               <IconButton
                 color="inherit"
