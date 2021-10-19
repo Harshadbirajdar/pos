@@ -24,6 +24,7 @@ import ExchangePanel from "./cashier/ExchangePanel";
 import AddCategoryWithoutPrice from "./manager/AddCategoryWithoutPrice";
 import AdminDashboard from "./cashier/AdminDashboard";
 import SalesmanReport from "./salesupervisor/SalesmanReport";
+import AddLocation from "./manager/location/AddLocation";
 const Routes = () => {
   return (
     <Provider store={store}>
@@ -96,6 +97,11 @@ const Routes = () => {
             exact
             path="/admin/exchange"
             component={ExchangePanel}
+          />
+          <ManagerRoute
+            exact
+            path="/admin/location/add"
+            component={AddLocation}
           />
         </Switch>
       </BrowserRouter>

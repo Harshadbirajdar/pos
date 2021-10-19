@@ -5,6 +5,7 @@ import {
   REPORT_STATE,
   SALESMAN_STATE,
   SUPPLIER_STATE,
+  LOCATION_STATE,
 } from "./action.type";
 
 export const spplierState = () => ({
@@ -26,4 +27,7 @@ export const reportState = () => ({
 });
 export const productState = () => ({
   type: PRODUCT_STATE,
+});
+export const locationState = () => ({
+  type: LOCATION_STATE,
 });

@@ -27,6 +27,9 @@ import AssessmentIcon from "@material-ui/icons/Assessment";
 import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import DonutSmallIcon from "@material-ui/icons/DonutSmall";
+import AddLocationIcon from "@material-ui/icons/LocationOn";
+import AddLocationAltIcon from "@material-ui/icons/AddLocationRounded";
+import EditLocationAltIcon from "@material-ui/icons/EditLocationRounded";
 import { connect } from "react-redux";
 import {
   categoryState,
@@ -35,6 +38,7 @@ import {
   reportState,
   salesmanState,
   spplierState,
+  locationState,
 } from "../redux/action/menu";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,6 +63,8 @@ const Menus = ({
   Report,
   changeProduct,
   Product,
+  Location,
+  changeLocation,
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -289,6 +295,38 @@ const Menus = ({
           </Link>
         </List>
       </Collapse>
+      {/* Location */}
+      <ListItem button onClick={changeLocation}>
+        <ListItemIcon>
+          <AddLocationIcon color="primary" />
+        </ListItemIcon>
+        <ListItemText primary="Location" />
+        {Location ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={Location} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <Link to="/admin/location/add">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <AddLocationAltIcon />
+                </ListItemIcon>
+                <ListItemText primary="Add Location"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+          <Link to="/admin/report/salesman">
+            <List>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <EditLocationAltIcon />
+                </ListItemIcon>
+                <ListItemText primary="Edit Location"></ListItemText>
+              </ListItem>
+            </List>
+          </Link>
+        </List>
+      </Collapse>
     </List>
   );
 };
@@ -299,6 +337,7 @@ const mapStateToProps = (state) => ({
   Customer: state.menu.customer,
   Report: state.menu.report,
   Product: state.menu.product,
+  Location: state.menu.location,
 });
 const mapDispatchToProps = (dispatch) => ({
   changeSupplier: () => {
@@ -318,6 +357,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   changeProduct: () => {
     dispatch(productState());
+  },
+  changeLocation: () => {
+    dispatch(locationState());
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Menus);
