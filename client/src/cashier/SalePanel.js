@@ -337,7 +337,9 @@ const SalePanel = ({
                     onChange={onhandleChange("barcode")}
                     onKeyDown={(e) => {
                       if (e.code === "NumpadEnter" || e.code === "Enter") {
-                        if (Number(prodcut.barcode.split("/")[0]) > 150) {
+                        if (
+                          Number(String(prodcut.barcode).split("/")[0]) > 150
+                        ) {
                           getProductByBarcode(
                             prodcut.barcode,
                             values,
