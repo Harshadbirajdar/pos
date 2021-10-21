@@ -447,7 +447,16 @@ const SalePanel = ({
                 </TableHead>
                 <TableBody>
                   {values.product.map((proodut, index) => (
-                    <TableRow key={index}>
+                    <TableRow
+                      key={index}
+                      onClick={(e) => {
+                        console.log("aaaa");
+                        console.log(index);
+                        values.product.splice(index, 1);
+                        setValues({ ...values, product: values.product });
+                        countTotalAmount();
+                      }}
+                    >
                       <TableCell>{proodut.salesman}</TableCell>
                       <TableCell>{proodut.barcode}</TableCell>
                       <TableCell>{proodut.name}</TableCell>
