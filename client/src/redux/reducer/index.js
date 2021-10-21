@@ -11,6 +11,7 @@ import customer from "./customer";
 import report from "./report";
 import dashboard from "./dashboard";
 import exchange from "./exchange";
+import location from "./location";
 export default combineReducers({
   supplier,
   category,
@@ -24,4 +25,5 @@ export default combineReducers({
   report,
   exchange,
   dashboard,
+  location,
 });

@@ -4,13 +4,16 @@ const { validationResult } = require("express-validator");
 // Create New Location...
 exports.createNewLocation = (req, res) => {
   const errors = validationResult(req);
+  const { name } = req.body;
   if (!errors.isEmpty()) {
     return res.status(400).json({
       error: errors.array()[0].msg,
     });
   }
 
-  const location = new Location({ name: req.body.name });
+  const location = new Location({
+    name: name[0].toUpperCase() + name.substring(1),
+  });
 
   location.save((err, location) => {
     if (err) {

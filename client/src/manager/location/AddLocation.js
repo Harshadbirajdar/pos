@@ -4,11 +4,15 @@ import {
   Grid,
   makeStyles,
   Paper,
+  Snackbar,
   TextField,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import Base from "../../core/Base";
 import SaveIcon from "@material-ui/icons/Save";
+import { addNewLocation } from "../../redux/action/location";
+import { connect } from "react-redux";
+import { Alert } from "@material-ui/lab";
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
@@ -17,11 +21,38 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
-const AddLocation = () => {
+const AddLocation = ({ Location, addNewLocation }) => {
   const classes = useStyles();
-
+  const [location, setLocation] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+  const msg = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={Location.error ? "error" : "success"}
+        >
+          {Location.error
+            ? Location.error
+            : `${Location.location?.name} Location Added Successfully...`}
+        </Alert>
+      </Snackbar>
+    );
+  };
   return (
     <Base title="Add Location">
+      {msg()}
       <Container maxWidth="md">
         <Paper className={classes.root}>
           <Grid container>
@@ -31,10 +62,10 @@ const AddLocation = () => {
                 margin="normal"
                 fullWidth
                 label="Location Name"
-                // value={values.address}
-
-                //   value={values.name}
-                // onChange={onhandleChange("address")}
+                value={location}
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                }}
               />
             </Grid>
             <Grid>
@@ -43,6 +74,11 @@ const AddLocation = () => {
                 variant="contained"
                 className={classes.button}
                 color="primary"
+                disabled={Location.loading}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addNewLocation(location, setLocation, setOpen);
+                }}
               >
                 Save
               </Button>
@@ -53,5 +89,13 @@ const AddLocation = () => {
     </Base>
   );
 };
+const mapStateToProps = (state) => ({
+  Location: state.location.add,
+});
 
-export default AddLocation;
+const mapDispatchToProps = (dispatch) => ({
+  addNewLocation: (location, setLocation, setOpen) => {
+    dispatch(addNewLocation(location, setLocation, setOpen));
+  },
+});
+export default connect(mapStateToProps, mapDispatchToProps)(AddLocation);
