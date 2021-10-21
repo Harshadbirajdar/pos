@@ -25,7 +25,7 @@ const BarcodePrint = React.forwardRef((props, ref) => {
             }}
           >
             <div style={{ display: "flex" }}>
-              <h3 style={{ margin: 0, marginLeft: "9px" }}>Moolchand</h3>
+              <h3 style={{ margin: 0, marginLeft: "9px" }}>ABC</h3>
               {products.size && (
                 <h4
                   style={{
@@ -80,7 +80,7 @@ const BarcodePrint = React.forwardRef((props, ref) => {
             }}
           >
             <div style={{ display: "flex" }}>
-              <h3 style={{ margin: 0, marginLeft: "9px" }}>Moolchand</h3>
+              <h3 style={{ margin: 0, marginLeft: "9px" }}>ABC</h3>
               {products.size && (
                 <h4
                   style={{

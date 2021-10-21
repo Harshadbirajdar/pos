@@ -62,17 +62,24 @@ const BillPrint = React.forwardRef((props, ref) => {
           src="https://www.moolchandsons.com/static/media/logo.7e1b8d1d.png"
           width="50"
         /> */}
-        <h2 style={{ textAlign: "center" }}>Moolchand Sons</h2>
+        <h2 style={{ textAlign: "center" }}>Abc Sons</h2>
       </div>
       <p style={{ margin: 0, textAlign: "center" }}>
+        sr no 17 Laxman dhankawade patil nager
+      </p>
+      <p style={{ margin: 0, textAlign: "center" }}>(Near Ganpati Mandir)</p>
+      <p style={{ margin: 0, textAlign: "center" }}>
+        Ph No: 020-000000000 / 12345678
+      </p>
+      {/* <p style={{ margin: 0, textAlign: "center" }}>
         City Post Chowk,Laxmi Road, Pune-2
       </p>
       <p style={{ margin: 0, textAlign: "center" }}>
         (Near Dagduseth Ganpati Mandir)
       </p>
       <p style={{ margin: 0, textAlign: "center" }}>
-        Ph No: 020-24432828 / 24461125
-      </p>
+        Ph No: 020-000000000 / 12345678
+      </p> */}
       <p
         style={{
           margin: 0,
@@ -82,7 +89,7 @@ const BillPrint = React.forwardRef((props, ref) => {
           textAlign: "center",
         }}
       >
-        www.moolchandsons.com
+        www.gratustech.com
       </p>
       {bill.customer && (
         <div
