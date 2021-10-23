@@ -25,6 +25,7 @@ import {
   GET_EXCHANGE_BILL_BY_ID_FOR_SALE_START,
   GET_EXCHANGE_BILL_BY_ID_FOR_SALE_SUCCESS,
   GET_EXCHANGE_BILL_BY_ID_FOR_SALE_FAILED,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_CLEAR,
   GENRATE_BILL_CLEAR,
 } from "./action.type";
 
@@ -215,7 +216,13 @@ const genrateBillFailed = (error) => ({
   payload: error,
 });
 
-export const genrateBill = (values, setValues, numberRef, handlePrint) => {
+export const genrateBill = (
+  values,
+  setValues,
+  numberRef,
+  handlePrint,
+  setExchangeId
+) => {
   const { user, token } = isAuthenticated();
   return (dispatch) => {
     dispatch(genrateBillStart());
@@ -226,10 +233,13 @@ export const genrateBill = (values, setValues, numberRef, handlePrint) => {
         },
       })
       .then((response) => {
+        setExchangeId("");
         setValues({
           product: [],
+          amount: 0,
         });
         dispatch(genrateBillSuccess(response.data));
+        dispatch(getExchangeBillByIdclear());
         numberRef.current.focus();
         document.getElementById("printBill").click();
       })
@@ -331,8 +341,18 @@ const getExchangeBillByIdFailed = (error) => ({
   type: GET_EXCHANGE_BILL_BY_ID_FOR_SALE_FAILED,
   payload: error,
 });
+const getExchangeBillByIdclear = () => ({
+  type: GET_EXCHANGE_BILL_BY_ID_FOR_SALE_CLEAR,
+});
 
-export const getExchangeBillById = (id, setError, setOpen, exchangeRef) => {
+export const getExchangeBillById = (
+  id,
+  setError,
+  setOpen,
+  exchangeRef,
+  values,
+  setValues
+) => {
   const { user, token } = isAuthenticated();
   return (dispatch) => {
     dispatch(getExchangeBillByIdStart());
@@ -346,6 +366,7 @@ export const getExchangeBillById = (id, setError, setOpen, exchangeRef) => {
       .then((response) => {
         dispatch(getExchangeBillByIdSuccess(response.data));
         exchangeRef.current.focus();
+        setValues({ ...values, exchange: response.data });
       })
       .catch((err) => {
         setOpen(true);

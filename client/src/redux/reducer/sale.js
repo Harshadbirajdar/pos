@@ -22,6 +22,7 @@ import {
   GET_EXCHANGE_BILL_BY_ID_FOR_SALE_SUCCESS,
   GET_EXCHANGE_BILL_BY_ID_FOR_SALE_FAILED,
   GENRATE_BILL_CLEAR,
+  GET_EXCHANGE_BILL_BY_ID_FOR_SALE_CLEAR,
 } from "../action/action.type";
 
 const initalState = {
@@ -214,6 +215,15 @@ const sale = (state = initalState, action) => {
         },
       };
 
+    case GET_EXCHANGE_BILL_BY_ID_FOR_SALE_CLEAR:
+      return {
+        ...state,
+        exchangeBill: {
+          loading: false,
+          error: false,
+          bill: {},
+        },
+      };
     case GENRATE_BILL_CLEAR:
       return {
         ...state,

@@ -191,7 +191,13 @@ const SalePanel = ({
           if (values.product.length !== 0 && e.code === "F2") {
             e.preventDefault();
 
-            genrateBill(values, setValues, numberRef, handlePrint);
+            genrateBill(
+              values,
+              setValues,
+              numberRef,
+              handlePrint,
+              setExchangeId
+            );
           }
         }}
       >
@@ -284,7 +290,9 @@ const SalePanel = ({
                           exchangeId,
                           setError,
                           setOpen,
-                          salesmanRef
+                          salesmanRef,
+                          values,
+                          setValues
                         );
                       }
                     }}
@@ -488,7 +496,13 @@ const SalePanel = ({
                 onClick={(e) => {
                   e.preventDefault();
 
-                  genrateBill(values, setValues, numberRef, handlePrint);
+                  genrateBill(
+                    values,
+                    setValues,
+                    numberRef,
+                    handlePrint,
+                    setExchangeId
+                  );
                 }}
                 disabled={values.product.length === 0}
                 className={classes.button}
@@ -558,8 +572,10 @@ const mapDispatchToProps = (dispatch) => ({
   addCustomer: (values, setValues, salesmanRef) => {
     dispatch(AddNewCustomer(values, setValues, salesmanRef));
   },
-  genrateBill: (values, setValues, numberRef, handlePrint) => {
-    dispatch(genrateBill(values, setValues, numberRef, handlePrint));
+  genrateBill: (values, setValues, numberRef, handlePrint, setExchangeId) => {
+    dispatch(
+      genrateBill(values, setValues, numberRef, handlePrint, setExchangeId)
+    );
   },
   getCategoryBarcode: (barcode, qtyRef, prodcut, setProduct, setOpen) => {
     dispatch(getCategoryBarcode(barcode, qtyRef, prodcut, setProduct, setOpen));
@@ -570,8 +586,17 @@ const mapDispatchToProps = (dispatch) => ({
   clearBarcode: () => {
     dispatch(getCategoryBarcodeClear());
   },
-  getExchangeBillById: (id, setError, setOpen, exchangeRef) => {
-    dispatch(getExchangeBillById(id, setError, setOpen, exchangeRef));
+  getExchangeBillById: (
+    id,
+    setError,
+    setOpen,
+    exchangeRef,
+    values,
+    setValues
+  ) => {
+    dispatch(
+      getExchangeBillById(id, setError, setOpen, exchangeRef, values, setValues)
+    );
   },
   clearBill: () => {
     dispatch(genrateBillClear());
