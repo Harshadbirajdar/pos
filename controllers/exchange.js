@@ -49,10 +49,10 @@ exports.getExchaneBillByNumber = (req, res) => {
 
   Exchange.findOne({
     billNo,
-    createdAt: {
-      $gte: currentDate,
-      $lte: new Date(currentDate).setHours(23, 59, 59),
-    },
+    // createdAt: {
+    //   $gte: currentDate,
+    //   $lte: new Date(currentDate).setHours(23, 59, 59),
+    // },
   }).exec((err, bill) => {
     if (err) {
       return res.status(400).json({

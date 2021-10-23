@@ -332,7 +332,7 @@ const getExchangeBillByIdFailed = (error) => ({
   payload: error,
 });
 
-export const getExchangeBillById = (id, setError, setOpen) => {
+export const getExchangeBillById = (id, setError, setOpen, exchangeRef) => {
   const { user, token } = isAuthenticated();
   return (dispatch) => {
     dispatch(getExchangeBillByIdStart());
@@ -345,6 +345,7 @@ export const getExchangeBillById = (id, setError, setOpen) => {
       })
       .then((response) => {
         dispatch(getExchangeBillByIdSuccess(response.data));
+        exchangeRef.current.focus();
       })
       .catch((err) => {
         setOpen(true);

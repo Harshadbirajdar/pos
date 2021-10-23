@@ -137,7 +137,10 @@ const SalePanel = ({
   const countTotalAmount = () => {
     setValues({
       ...values,
-      amount: values.product.reduce((a, b) => a + b.amount, 0),
+      amount: values.product.reduce(
+        (a, b) => a + b.amount,
+        Exchange.bill.amount ? -Exchange.bill.amount : 0
+      ),
     });
   };
 
@@ -180,7 +183,7 @@ const SalePanel = ({
 
   useEffect(() => {
     countTotalAmount();
-  }, [values.product]);
+  }, [values.product, Exchange.bill.amount]);
   return (
     <Base title="Sale Panel" sale={true}>
       <div
@@ -277,7 +280,12 @@ const SalePanel = ({
                     }}
                     onKeyDown={(e) => {
                       if (e.code === "Enter" || e.code === "NumpadEnter") {
-                        getExchangeBillById(exchangeId, setError, setOpen);
+                        getExchangeBillById(
+                          exchangeId,
+                          setError,
+                          setOpen,
+                          salesmanRef
+                        );
                       }
                     }}
                     label="Exchange Bill Number"
@@ -562,8 +570,8 @@ const mapDispatchToProps = (dispatch) => ({
   clearBarcode: () => {
     dispatch(getCategoryBarcodeClear());
   },
-  getExchangeBillById: (id, setError, setOpen) => {
-    dispatch(getExchangeBillById(id, setError, setOpen));
+  getExchangeBillById: (id, setError, setOpen, exchangeRef) => {
+    dispatch(getExchangeBillById(id, setError, setOpen, exchangeRef));
   },
   clearBill: () => {
     dispatch(genrateBillClear());
