@@ -306,6 +306,7 @@ const SalePanel = ({
                       border: "2px solid",
                       textAlign: " center",
                       fontSize: "20px",
+                      borderRadius: "1em",
                     }}
                   >
                     <h1>{parseInt(values.amount)}</h1>
