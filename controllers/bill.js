@@ -1,6 +1,7 @@
 const Bill = require("../model/bill");
 const Salesman = require("../model/salesman");
 const Product = require("../model/product");
+const Exchange = require("../model/exchangeBill");
 
 exports.createBill = async (req, res, next) => {
   let bill;
@@ -32,7 +33,7 @@ exports.createBill = async (req, res, next) => {
   });
   Salesman.bulkWrite(salesman);
   Product.bulkWrite(stockUpdate);
-
+  await Exchange.findByIdAndUpdate(req.body.exchange, { isUsed: true });
   bill.save((err, bill) => {
     if (err) {
       return res.status(400).json({
