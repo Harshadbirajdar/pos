@@ -65,6 +65,7 @@ exports.getAllBill = async (req, res) => {
     .skip(startIndex)
     .sort([["createdAt", sort]])
     .populate("customer")
+    .populate("exchange")
     .exec((err, bill) => {
       if (err) {
         return res.status(400).json({
