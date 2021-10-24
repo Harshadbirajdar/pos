@@ -83,33 +83,32 @@ exports.isSuperAdmin = (req, res, next) => {
 
 exports.isAdmin = (req, res, next) => {
   if (!req.profile.role >= 4) {
-    return res.status(403).json({
+    return res.status(401).json({
       error: "Your are not admin",
     });
   }
-
   next();
 };
 
 exports.isManager = (req, res, next) => {
-  if (!req.profile.role >= 3) {
-    return res.status(403).json({
+  if (req.profile.role < 3) {
+    return res.status(401).json({
       error: "You do not have right to access this data",
     });
   }
   next();
 };
 exports.isSaleSupervisor = (req, res, next) => {
-  if (!req.profile.role >= 2) {
-    return res.status(403).json({
+  if (req.profile.role < 2) {
+    return res.status(401).json({
       error: "You do not have right to access this data",
     });
   }
   next();
 };
 exports.isCashier = (req, res, next) => {
-  if (!req.profile.role >= 1) {
-    return res.status(403).json({
+  if (req.profile.role < 1) {
+    return res.status(401).json({
       error: "You do not have right to access this data",
     });
   }

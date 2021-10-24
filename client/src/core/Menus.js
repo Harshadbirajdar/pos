@@ -40,6 +40,7 @@ import {
   spplierState,
   locationState,
 } from "../redux/action/menu";
+import { isAuthenticated } from "../apicall";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -68,7 +69,7 @@ const Menus = ({
 }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-
+  const { user } = isAuthenticated();
   const handleClick = () => {
     setOpen(!open);
   };
@@ -125,82 +126,90 @@ const Menus = ({
               </ListItem>
             </List>
           </Link>
-          {/*  */}
-          <Link to="/admin/purchase">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <PersonAddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Purchase Entry"></ListItemText>
-              </ListItem>
-            </List>
-          </Link>
+          {user.role >= 3 && (
+            <Link to="/admin/purchase">
+              <List>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <PersonAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Purchase Entry"></ListItemText>
+                </ListItem>
+              </List>
+            </Link>
+          )}
         </List>
       </Collapse>
-      <ListItem button onClick={changeSupplier}>
-        <ListItemIcon>
-          <SupervisorAccountIcon color="primary" />
-        </ListItemIcon>
-        <ListItemText primary="Supplier" />
-        {Supplier ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={Supplier} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <Link to="/admin/add/supplier">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <PersonAddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Add Supplier"></ListItemText>
-              </ListItem>
+      {user.role >= 3 && (
+        <>
+          <ListItem button onClick={changeSupplier}>
+            <ListItemIcon>
+              <SupervisorAccountIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Supplier" />
+            {Supplier ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={Supplier} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <Link to="/admin/add/supplier">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <PersonAddIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Add Supplier"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
+              <Link to="/admin/view/supplier">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <PeopleAltIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="View suplier"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
             </List>
-          </Link>
-          <Link to="/admin/view/supplier">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <PeopleAltIcon />
-                </ListItemIcon>
-                <ListItemText primary="View suplier"></ListItemText>
-              </ListItem>
+          </Collapse>
+        </>
+      )}
+      {user.role >= 3 && (
+        <>
+          <ListItem button onClick={changeSalesman}>
+            <ListItemIcon>
+              <AccessibilityIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Salesman" />
+            {Salesman ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={Salesman} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <Link to="/admin/add/salesman">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <AddIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Add Salesman"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
+              <Link to="/admin/view/salesman">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <PeopleAltIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="View Salesman"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
             </List>
-          </Link>
-        </List>
-      </Collapse>
-      <ListItem button onClick={changeSalesman}>
-        <ListItemIcon>
-          <AccessibilityIcon color="primary" />
-        </ListItemIcon>
-        <ListItemText primary="Salesman" />
-        {Salesman ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={Salesman} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <Link to="/admin/add/salesman">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <AddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Add Salesman"></ListItemText>
-              </ListItem>
-            </List>
-          </Link>
-          <Link to="/admin/view/salesman">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <PeopleAltIcon />
-                </ListItemIcon>
-                <ListItemText primary="View Salesman"></ListItemText>
-              </ListItem>
-            </List>
-          </Link>
-        </List>
-      </Collapse>
-
+          </Collapse>
+        </>
+      )}
       <ListItem button onClick={changeCutomer}>
         <ListItemIcon>
           <FaceIcon color="primary" />
@@ -222,47 +231,51 @@ const Menus = ({
           </Link>
         </List>
       </Collapse>
-      <ListItem button onClick={changeCategory}>
-        <ListItemIcon>
-          <CategoryIcon color="primary" />
-        </ListItemIcon>
-        <ListItemText primary="Category" />
-        {Category ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={Category} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <Link to="/admin/add/category">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <ControlPointDuplicateIcon />
-                </ListItemIcon>
-                <ListItemText primary="Add Category"></ListItemText>
-              </ListItem>
+      {user.role >= 3 && (
+        <>
+          <ListItem button onClick={changeCategory}>
+            <ListItemIcon>
+              <CategoryIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Category" />
+            {Category ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={Category} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <Link to="/admin/add/category">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <ControlPointDuplicateIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Add Category"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
+              <Link to="/admin/view/category">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <CategoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="View Category"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
+              <Link to="/admin/add/barcode/category">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <CategoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Add Barcode Category"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
             </List>
-          </Link>
-          <Link to="/admin/view/category">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <CategoryIcon />
-                </ListItemIcon>
-                <ListItemText primary="View Category"></ListItemText>
-              </ListItem>
-            </List>
-          </Link>
-          <Link to="/admin/add/barcode/category">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <CategoryIcon />
-                </ListItemIcon>
-                <ListItemText primary="Add Barcode Category"></ListItemText>
-              </ListItem>
-            </List>
-          </Link>
-        </List>
-      </Collapse>
+          </Collapse>
+        </>
+      )}
       {/* Report */}
       <ListItem button onClick={changeReport}>
         <ListItemIcon>
@@ -296,37 +309,41 @@ const Menus = ({
         </List>
       </Collapse>
       {/* Location */}
-      <ListItem button onClick={changeLocation}>
-        <ListItemIcon>
-          <AddLocationIcon color="primary" />
-        </ListItemIcon>
-        <ListItemText primary="Location" />
-        {Location ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={Location} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <Link to="/admin/location/add">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <AddLocationAltIcon />
-                </ListItemIcon>
-                <ListItemText primary="Add Location"></ListItemText>
-              </ListItem>
+      {user.role >= 3 && (
+        <>
+          <ListItem button onClick={changeLocation}>
+            <ListItemIcon>
+              <AddLocationIcon color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Location" />
+            {Location ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={Location} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <Link to="/admin/location/add">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <AddLocationAltIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Add Location"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
+              <Link to="/admin/report/salesman">
+                <List>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <EditLocationAltIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Edit Location"></ListItemText>
+                  </ListItem>
+                </List>
+              </Link>
             </List>
-          </Link>
-          <Link to="/admin/report/salesman">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <EditLocationAltIcon />
-                </ListItemIcon>
-                <ListItemText primary="Edit Location"></ListItemText>
-              </ListItem>
-            </List>
-          </Link>
-        </List>
-      </Collapse>
+          </Collapse>
+        </>
+      )}
     </List>
   );
 };
