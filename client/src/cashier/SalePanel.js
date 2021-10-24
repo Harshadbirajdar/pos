@@ -135,13 +135,20 @@ const SalePanel = ({
     setProduct({ ...prodcut, [name]: event.target.value });
   };
   const countTotalAmount = () => {
-    setValues({
-      ...values,
-      amount: values.product.reduce(
-        (a, b) => a + b.amount,
-        Exchange.bill.amount ? -Exchange.bill.amount : 0
-      ),
-    });
+    if (values.product.length !== 0) {
+      setValues({
+        ...values,
+        amount: values.product.reduce(
+          (a, b) => a + b.amount,
+          Exchange.bill.amount ? -Exchange.bill.amount : 0
+        ),
+      });
+    } else {
+      setValues(() => ({
+        ...values,
+        amount: Exchange.bill.amount ? -Exchange.bill.amount : 0,
+      }));
+    }
   };
 
   const onPriceEnterKey = (e) => {

@@ -364,14 +364,13 @@ export const getExchangeBillById = (
         },
       })
       .then((response) => {
-        if (response.data.isUsed) {
-          setOpen(true);
-          setError("Exchange Bill is already used...");
-        } else {
-          dispatch(getExchangeBillByIdSuccess(response.data));
-          exchangeRef.current.focus();
-          setValues({ ...values, exchange: response.data });
-        }
+        dispatch(getExchangeBillByIdSuccess(response.data));
+        exchangeRef.current.focus();
+        setValues({
+          ...values,
+          exchange: response.data,
+          amount: -response.data.amount,
+        });
       })
       .catch((err) => {
         setOpen(true);
