@@ -81,6 +81,7 @@ billSchema.pre("save", function (next) {
     doc.billNo = doc.billNo + data.seq;
     doc.createdAt = new Date();
     doc.populate("customer").execPopulate();
+    doc.populate("exchange").execPopulate();
     next();
   });
 });

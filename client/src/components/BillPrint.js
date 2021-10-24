@@ -12,6 +12,7 @@ import moment from "moment";
 
 const BillPrint = React.forwardRef((props, ref) => {
   const { bill } = props;
+  console.log(bill);
   const [gst12, setGst12] = useState(
     bill.product
       .filter(({ gst }) => gst === 12)
@@ -170,9 +171,35 @@ const BillPrint = React.forwardRef((props, ref) => {
               style={{ padding: "1em", textAlign: "right", fontSize: "1em" }}
               colSpan={6}
             >
-              Total Amount :<strong>{bill.amount.toFixed(2)}</strong>
+              Total Amount :
+              <strong>
+                {bill.exchange
+                  ? (bill.amount + bill.exchange.amount).toFixed(2)
+                  : bill.amount.toFixed(2)}
+              </strong>
             </TableCell>
           </TableRow>
+          {bill.exchange &&
+            bill.exchange.product.map((exproduct) => (
+              <>
+                <TableRow key={exproduct._id}>
+                  <TableCell>{exproduct.salesman}</TableCell>
+
+                  <TableCell
+                    style={{ textAlign: "center", paddingLeft: "0.9em" }}
+                  >
+                    {exproduct.name}
+                    <br /> {exproduct.barcode}{" "}
+                  </TableCell>
+                  <TableCell>{exproduct.hsn}</TableCell>
+                  <TableCell>{exproduct.qty}</TableCell>
+                  <TableCell>{exproduct.price}</TableCell>
+                  <TableCell>{exproduct.gst}%</TableCell>
+                  <TableCell>{exproduct.amount}</TableCell>
+                </TableRow>
+              </>
+            ))}
+
           <TableRow>
             <TableCell
               style={{
@@ -186,7 +213,7 @@ const BillPrint = React.forwardRef((props, ref) => {
                 Round Off {(-bill.amount + parseInt(bill.amount)).toFixed(2)}
               </span>
               <br />
-              Net Payable: <strong> {parseInt(bill.amount)}</strong>
+              Net Payable: <strong> ₹ {parseInt(bill.amount)} /-</strong>
             </TableCell>
           </TableRow>
         </TableBody>

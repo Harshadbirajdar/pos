@@ -457,11 +457,11 @@ const ExchangePanel = ({
           <SaveIcon />
           Save
         </Fab>
-        {ExchangeBill.bill.product.length !== 0 && (
+        {/* {ExchangeBill.bill.product.length !== 0 && (
           <div>
             <BillPrint bill={ExchangeBill.bill} ref={componentRef} />
           </div>
-        )}
+        )} */}
         {console.log("ExchangeBill.bill", ExchangeBill.bill)}
         <button onClick={handlePrint}></button>
       </Container>

@@ -535,7 +535,7 @@ const SalePanel = ({
         </Grid> */}
 
           {Bill.bill.product.length !== 0 && (
-            <div style={{ display: "none" }}>
+            <div style={{ display: "block" }}>
               <BillPrint bill={Bill.bill} ref={componentRef} />
             </div>
           )}
