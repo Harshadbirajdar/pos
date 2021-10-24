@@ -296,16 +296,18 @@ const Menus = ({
               </ListItem>
             </List>
           </Link>
-          <Link to="/admin/report/salesman">
-            <List>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <DonutSmallIcon />
-                </ListItemIcon>
-                <ListItemText primary="Salesman Report"></ListItemText>
-              </ListItem>
-            </List>
-          </Link>
+          {user.role >= 2 && (
+            <Link to="/admin/report/salesman">
+              <List>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <DonutSmallIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Salesman Report"></ListItemText>
+                </ListItem>
+              </List>
+            </Link>
+          )}
         </List>
       </Collapse>
       {/* Location */}

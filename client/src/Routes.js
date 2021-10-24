@@ -83,7 +83,7 @@ const Routes = () => {
             path="/admin/view/customer"
             component={ViewCustomer}
           />
-          <SaleSupervisorRoute
+          <CashierRoute
             exact
             path="/admin/report/sale"
             component={SaleReport}
