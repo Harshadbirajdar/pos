@@ -36,6 +36,7 @@ import moment from "moment";
 import BillPrint from "../components/BillPrint";
 import { useReactToPrint } from "react-to-print";
 import { ExportCsv } from "../components/ExportCsv";
+import { isAuthenticated } from "../apicall";
 
 const styles = (theme) => ({
   root: {
@@ -66,6 +67,7 @@ const SaleReport = ({ fetchBillReport, Bill }) => {
     );
   }, [values]);
   const componentRef = useRef();
+  const { user } = isAuthenticated();
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(`@page { size:79mm 551px;margin:0}`);
   const [test, setTest] = useState(0);
@@ -114,9 +116,11 @@ const SaleReport = ({ fetchBillReport, Bill }) => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handlePrint} color="primary">
-            Print
-          </Button>
+          {user.role !== 1 && (
+            <Button onClick={handlePrint} color="primary">
+              Print
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     );

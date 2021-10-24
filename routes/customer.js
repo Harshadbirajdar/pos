@@ -40,7 +40,7 @@ router.get(
   isSignIn,
   checkToken,
   isAuthinticated,
-  isSaleSupervisor,
+  isCashier,
   getAllCustomer
 );
 

@@ -38,7 +38,7 @@ router.get(
   isSignIn,
   checkToken,
   isAuthinticated,
-  isSaleSupervisor,
+  isCashier,
   getAllproduct
 );
 

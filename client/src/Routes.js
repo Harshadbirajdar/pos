@@ -73,12 +73,12 @@ const Routes = () => {
             component={ViewSalesman}
           />
           <CashierRoute exact path="/admin/sale" component={SalePanel} />
-          <SaleSupervisorRoute
+          <CashierRoute
             exact
             path="/admin/view/product"
             component={ViewProduct}
           />
-          <SaleSupervisorRoute
+          <CashierRoute
             exact
             path="/admin/view/customer"
             component={ViewCustomer}

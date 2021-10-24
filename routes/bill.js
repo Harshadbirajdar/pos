@@ -35,7 +35,7 @@ router.get(
   isSignIn,
   checkToken,
   isAuthinticated,
-  isSaleSupervisor,
+  isCashier,
   getAllBill
 );
 // TODO: come here
