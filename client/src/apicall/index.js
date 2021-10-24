@@ -41,7 +41,7 @@ export const signOut = (next) => {
   if (typeof window == "undefined") {
     return false;
   }
-  localStorage.removeItem("jwt");
+  sessionStorage.removeItem("jwt");
   next();
 };
 

@@ -6,7 +6,7 @@ import {
   ListItemText,
   makeStyles,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import React, { useState } from "react";
 import CategoryIcon from "@material-ui/icons/Category";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
@@ -30,6 +30,8 @@ import DonutSmallIcon from "@material-ui/icons/DonutSmall";
 import AddLocationIcon from "@material-ui/icons/LocationOn";
 import AddLocationAltIcon from "@material-ui/icons/AddLocationRounded";
 import EditLocationAltIcon from "@material-ui/icons/EditLocationRounded";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+
 import { connect } from "react-redux";
 import {
   categoryState,
@@ -40,7 +42,7 @@ import {
   spplierState,
   locationState,
 } from "../redux/action/menu";
-import { isAuthenticated } from "../apicall";
+import { isAuthenticated, signOut } from "../apicall";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -67,6 +69,7 @@ const Menus = ({
   Location,
   changeLocation,
 }) => {
+  const history = useHistory();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { user } = isAuthenticated();
@@ -346,6 +349,21 @@ const Menus = ({
           </Collapse>
         </>
       )}
+      <List>
+        <ListItem
+          button
+          onClick={() => {
+            signOut(() => {
+              history.push("/signin");
+            });
+          }}
+        >
+          <ListItemIcon>
+            <ExitToAppIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Sign Out"></ListItemText>
+        </ListItem>
+      </List>
     </List>
   );
 };
