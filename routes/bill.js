@@ -5,6 +5,7 @@ const {
   getDayBillReportSummery,
   getBillByBarcode,
   getWeeklyChartData,
+  getCategorySaleReport,
 } = require("../controllers/bill");
 const { pushBillInCustomer } = require("../controllers/customer");
 const { getUserById } = require("../controllers/user");
@@ -57,5 +58,14 @@ router.get(
   isAuthinticated,
   isManager,
   getWeeklyChartData
+);
+
+router.get(
+  "/:userId/category/chart",
+  isSignIn,
+  checkToken,
+  isAuthinticated,
+  isManager,
+  getCategorySaleReport
 );
 module.exports = router;

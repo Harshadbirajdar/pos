@@ -184,3 +184,31 @@ exports.getWeeklyChartData = (req, res) => {
       return res.json(days);
     });
 };
+
+exports.getCategorySaleReport = (req, res) => {
+  const startDate = new Date(
+    new Date(req.query.startDate).setHours(00, 00, 00)
+  );
+  const endDate = new Date(new Date(req.query.endDate).setHours(23, 59, 59));
+  Bill.find({ createdAt: { $gte: startDate, $lte: endDate } })
+    .select("product.name product.qty product.isQtyOne")
+    .exec((err, bills) => {
+      let data = {};
+      bills.map((bill) => {
+        bill.product.map((product) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Something went wrong...",
+            });
+          }
+          if (!product.isQtyOne) {
+            data[product.name] = data[product.name]
+              ? data[product.name] + product.qty
+              : product.qty;
+          }
+        });
+      });
+
+      return res.json(data);
+    });
+};
