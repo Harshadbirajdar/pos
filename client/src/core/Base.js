@@ -139,6 +139,7 @@ const Base = ({
             }}
           >
             <span
+              style={{ cursor: "pointer" }}
               onClick={() => {
                 signOut(() => {
                   localStorage.removeItem("location");
