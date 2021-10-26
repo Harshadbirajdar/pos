@@ -5,6 +5,9 @@ import {
   GET_WEEKLY_CHART_FAILED,
   GET_WEEKLY_CHART_START,
   GET_WEEKLY_CHART_SUCCESS,
+  GET_REPORT_BY_CATEGORY_CHART_FAILED,
+  GET_REPORT_BY_CATEGORY_CHART_SUCCESS,
+  GET_REPORT_BY_CATEGORY_CHART_START,
 } from "../action/action.type";
 
 const initalState = {
@@ -16,6 +19,11 @@ const initalState = {
   previousChart: {
     loading: false,
     data: [],
+    error: false,
+  },
+  category: {
+    loading: false,
+    data: {},
     error: false,
   },
 };
@@ -53,6 +61,35 @@ const dashboard = (state = initalState, action) => {
       return {
         ...state,
         previousChart: { loading: false, data: [], error: action.payload },
+      };
+
+    case GET_REPORT_BY_CATEGORY_CHART_START:
+      return {
+        ...state,
+        category: {
+          loading: true,
+          data: {},
+          error: false,
+        },
+      };
+
+    case GET_REPORT_BY_CATEGORY_CHART_SUCCESS:
+      return {
+        ...state,
+        category: {
+          loading: false,
+          data: action.payload,
+          error: false,
+        },
+      };
+    case GET_REPORT_BY_CATEGORY_CHART_FAILED:
+      return {
+        ...state,
+        category: {
+          loading: false,
+          data: {},
+          error: action.payload,
+        },
       };
     default:
       return state;

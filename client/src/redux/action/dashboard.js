@@ -2,6 +2,9 @@ import {
   GET_PREVIOUS_WEEKLY_CHART_FAILED,
   GET_PREVIOUS_WEEKLY_CHART_START,
   GET_PREVIOUS_WEEKLY_CHART_SUCCESS,
+  GET_REPORT_BY_CATEGORY_CHART_FAILED,
+  GET_REPORT_BY_CATEGORY_CHART_START,
+  GET_REPORT_BY_CATEGORY_CHART_SUCCESS,
   GET_WEEKLY_CHART_FAILED,
   GET_WEEKLY_CHART_START,
   GET_WEEKLY_CHART_SUCCESS,
@@ -9,6 +12,7 @@ import {
 import axios from "axios";
 import { isAuthenticated } from "../../apicall";
 import { API } from "../../backend";
+import moment from "moment";
 const getWeeklyChartStart = () => ({
   type: GET_WEEKLY_CHART_START,
 });
@@ -80,6 +84,41 @@ export const getPreviousWeeklyChart = () => {
       })
       .catch((err) => {
         dispatch(getPreviousWeeklyChartFailed(err.response.data.error));
+      });
+  };
+};
+
+const getReportByCategoryChartStart = () => ({
+  type: GET_REPORT_BY_CATEGORY_CHART_START,
+});
+const getReportByCategoryChartSuccess = (data) => ({
+  type: GET_REPORT_BY_CATEGORY_CHART_SUCCESS,
+  payload: data,
+});
+const getReportByCategoryChartFailed = (err) => ({
+  type: GET_REPORT_BY_CATEGORY_CHART_FAILED,
+  payload: err,
+});
+
+export const getReportByCategoryChart = () => {
+  const { user, token } = isAuthenticated();
+  const date = moment(new Date()).format("YYYY-MM-DD");
+  return (dispatch) => {
+    dispatch(getReportByCategoryChartStart());
+    axios
+      .get(
+        `${API}/${user._id}/category/chart?startDate=${date}&endDate=${date}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        dispatch(getReportByCategoryChartSuccess(response.data));
+      })
+      .catch((err) => {
+        dispatch(getReportByCategoryChartFailed(err.response.data.error));
       });
   };
 };
