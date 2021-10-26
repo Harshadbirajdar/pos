@@ -25,7 +25,8 @@ import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
 import { connect } from "react-redux";
 import { switchScreenMode } from "../redux/action/screen";
 import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
-import { Link, withRouter } from "react-router-dom";
+import { Link, withRouter, useHistory } from "react-router-dom";
+import { signOut } from "../apicall";
 
 const drawerWidth = 240;
 
@@ -96,6 +97,8 @@ const Base = ({
   history,
   exchange,
 }) => {
+  const historys = useHistory();
+
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -135,7 +138,16 @@ const Base = ({
               marginLeft: "auto",
             }}
           >
-            <span>{JSON.parse(localStorage.getItem("location"))?.name}</span>
+            <span
+              onClick={() => {
+                signOut(() => {
+                  localStorage.removeItem("location");
+                  historys.push("/signin");
+                });
+              }}
+            >
+              {JSON.parse(localStorage.getItem("location"))?.name}
+            </span>
             {sale && (
               <IconButton
                 color="inherit"
