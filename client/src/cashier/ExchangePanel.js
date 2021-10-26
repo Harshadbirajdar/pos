@@ -19,6 +19,7 @@ import {
   DialogContent,
   Fab,
   DialogTitle,
+  Snackbar,
 } from "@material-ui/core";
 import {
   exchangeBill,
@@ -27,7 +28,7 @@ import {
 } from "../redux/action/exchange";
 import { connect } from "react-redux";
 import { productState } from "../redux/action/menu";
-import { Autocomplete } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import SaveIcon from "@material-ui/icons/Save";
 
 const ExchangePanel = ({
@@ -97,6 +98,28 @@ const ExchangePanel = ({
     }
     setValues({ ...values, product: localProduct });
     debugger;
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const msg = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error">
+          {Bill.error}
+        </Alert>
+      </Snackbar>
+    );
   };
 
   const CustomeDialog = () => {
@@ -242,6 +265,7 @@ const ExchangePanel = ({
   };
   return (
     <Base title="Exchange" exchange={true}>
+      {msg()}
       {CustomeDialog()}
       <Container>
         <Paper>
